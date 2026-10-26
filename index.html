@@ -6,23 +6,23 @@
 <title>コツコツ貯金</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
-  --paper: #fff0f5;
+  --paper: #ffe9f1;
   --card: #ffffff;
   --ink: #4a2433;
   --muted: #8a6474;
-  --teal: #d6336c;
-  --teal-soft: #ffdbe8;
-  --gold: #ff7eb0;
-  --gold-2: #ff9cc2;
-  --gold-deep: #c2255c;
-  --on-gold: #ffffff;
+  --main: #d6336c;
+  --soft: #ffdbe8;
+  --pink: #ff7eb0;
+  --pink2: #ffa6c8;
+  --deep: #c2255c;
+  --on: #ffffff;
   --danger: #c0392b;
-  --line: #f9cadb;
-  --dot: #ffd6e5;
+  --line: #f9b9d0;
+  --dot: #ffd0e2;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -30,13 +30,12 @@
     --card: #3a1f2d;
     --ink: #ffe8f0;
     --muted: #d9a8bb;
-    --teal: #ff9cc2;
-    --teal-soft: #4d2a3b;
-    --gold: #ff8fb8;
-    --gold-2: #ffb0cd;
-    --gold-deep: #c2255c;
-    --on-gold: #4a1030;
-    --line: #5a3347;
+    --main: #ff9cc2;
+    --soft: #4d2a3b;
+    --pink: #ff8fb8;
+    --pink2: #ffb0cd;
+    --on: #4a1030;
+    --line: #6a3a50;
     --danger: #ff9a8a;
     --dot: #3a1f2d;
   }
@@ -44,81 +43,201 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
-  background-color: var(--paper);
-  background-image: radial-gradient(var(--dot) 2px, transparent 2px);
-  background-size: 22px 22px;
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
   color: var(--ink);
   min-height: 100vh;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 2.5px, transparent 2.5px);
+  background-size: 24px 24px;
   padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+  overflow-x: hidden;
 }
-main { max-width: 480px; margin: 0 auto; padding: 24px 20px 48px; }
-h1 { font-size: 24px; margin: 0 0 24px; font-weight: 900; color: var(--teal); text-align: center; }
 .hidden { display: none !important; }
+main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 20px 18px 56px; }
 
-.login { text-align: center; padding-top: 48px; }
-.login p { color: var(--muted); line-height: 1.8; margin: 0 0 28px; }
+.float { position: fixed; bottom: -40px; z-index: 0; pointer-events: none; opacity: .5; animation: rise linear infinite; }
+@keyframes rise { to { transform: translateY(-115vh) rotate(25deg); } }
+
+.title { text-align: center; margin: 4px 0 22px; }
+.title h1 {
+  display: inline-block;
+  margin: 0;
+  padding: 10px 26px 12px;
+  font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--on);
+  background: linear-gradient(180deg, var(--pink2), var(--pink));
+  border-radius: 999px;
+  box-shadow: 0 6px 0 var(--deep);
+  text-shadow: 0 2px 0 var(--deep);
+}
+
+.card {
+  background: var(--card);
+  border: 3px solid var(--line);
+  border-radius: 32px;
+  box-shadow: 0 7px 0 var(--line);
+  padding: 20px;
+  margin-bottom: 26px;
+}
+
+.login { text-align: center; }
+.login .pig { width: 180px; margin: 0 auto 6px; display: block; }
+.login p { color: var(--muted); line-height: 1.8; margin: 0 0 22px; }
 #gbtn { display: flex; justify-content: center; }
 
-.jar {
-  background: var(--card);
-  border: 2px solid var(--line);
-  border-radius: 32px;
-  padding: 28px 22px 24px;
+.stage { position: relative; text-align: center; }
+.pig { width: 210px; display: block; margin: 0 auto; overflow: visible; }
+.pig.wiggle { animation: wiggle .7s ease; }
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-6deg) scale(1.06); }
+  45% { transform: rotate(5deg) scale(1.04); }
+  70% { transform: rotate(-3deg) scale(1.02); }
+}
+.dropcoin {
+  position: absolute;
+  left: calc(50% - 24px);
+  top: -30px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc93c 55%, #e29a00);
+  border: 3px solid #e29a00;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 13px;
+  color: #a86b00;
+  opacity: 0;
+}
+.dropcoin.go { animation: drop .9s cubic-bezier(.5, 0, 1, .6) forwards; }
+@keyframes drop {
+  0% { opacity: 1; transform: translateY(0) rotate(0); }
+  80% { opacity: 1; transform: translateY(78px) rotate(540deg); }
+  100% { opacity: 0; transform: translateY(92px) rotate(600deg) scale(.6); }
+}
+
+.label { margin: 8px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
+.big {
+  margin: 0;
+  text-align: center;
+  font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
+  font-size: 58px;
+  line-height: 1.2;
+  color: var(--main);
+}
+.big small { font-size: 22px; margin-left: 4px; }
+.cheer {
+  margin: 10px auto 0;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--main);
+  font-weight: 900;
+  font-size: 15px;
   text-align: center;
 }
-.jar .label { color: var(--muted); font-size: 15px; margin: 0; }
-.jar .big { font-size: 56px; font-weight: 900; margin: 4px 0 0; line-height: 1.15; color: var(--teal); }
-.jar .big small { font-size: 24px; margin-left: 4px; }
-.bar {
-  height: 22px;
-  background: var(--teal-soft);
-  border-radius: 999px;
-  margin: 22px 0 10px;
-  overflow: hidden;
-}
-.bar > i {
-  display: block;
-  height: 100%;
+
+.track { position: relative; height: 26px; margin: 24px 4px 8px; background: var(--soft); border-radius: 999px; border: 3px solid var(--line); }
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
   width: 0;
-  background: repeating-linear-gradient(135deg, var(--gold) 0 12px, var(--gold-2) 12px 24px);
+  min-width: 0;
   border-radius: 999px;
-  transition: width .6s ease;
+  background: repeating-linear-gradient(135deg, var(--pink) 0 12px, var(--pink2) 12px 24px);
+  transition: width 1s cubic-bezier(.2, .8, .2, 1);
 }
-.sub { display: flex; justify-content: space-between; font-size: 15px; color: var(--muted); }
-.sub b { color: var(--ink); font-size: 17px; }
+.mark {
+  position: absolute;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  background: var(--card);
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  filter: grayscale(1);
+  opacity: .7;
+}
+.mark.on { filter: none; opacity: 1; border-color: var(--pink); }
+.ends { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); padding: 0 4px; }
+.ends b { color: var(--ink); font-size: 17px; }
 
 .coin {
+  position: relative;
   display: block;
   width: 100%;
   margin-top: 24px;
-  padding: 22px 16px;
+  padding: 22px 12px 24px;
   font: inherit;
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 900;
-  color: var(--on-gold);
-  background: var(--gold);
+  color: var(--on);
+  background: linear-gradient(180deg, var(--pink2), var(--pink));
   border: 0;
-  border-bottom: 6px solid var(--gold-deep);
   border-radius: 999px;
+  box-shadow: 0 8px 0 var(--deep);
+  text-shadow: 0 2px 0 var(--deep);
   cursor: pointer;
+  overflow: hidden;
+  transition: transform .08s, box-shadow .08s;
 }
-.coin:active { transform: translateY(3px); border-bottom-width: 3px; }
+.coin::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
+  transform: skewX(-20deg);
+  animation: shine 3.6s ease-in-out infinite;
+}
+@keyframes shine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+.coin:active { transform: translateY(6px); box-shadow: 0 2px 0 var(--deep); }
 .coin:disabled {
-  background: var(--teal-soft);
+  background: var(--soft);
   color: var(--muted);
-  border-bottom-color: var(--line);
+  box-shadow: 0 8px 0 var(--line);
+  text-shadow: none;
   cursor: default;
   transform: none;
 }
-.coin:focus-visible, .del:focus-visible, .logout:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.coin:disabled::after { display: none; }
+.coin:focus-visible, .del:focus-visible, .logout:focus-visible { outline: 3px solid var(--main); outline-offset: 3px; }
 
-.note { text-align: center; color: var(--muted); margin: 14px 0 0; font-size: 15px; min-height: 22px; }
-.error { color: var(--danger); text-align: center; margin: 14px 0 0; min-height: 22px; font-size: 15px; }
+.note { text-align: center; color: var(--muted); margin: 18px 0 0; font-size: 15px; min-height: 22px; }
+.error { color: var(--danger); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; }
+
+.stamp h2, .recs h2 { margin: 0 0 12px; font-size: 16px; color: var(--main); display: flex; justify-content: space-between; align-items: baseline; }
+.stamp h2 span { font-size: 13px; color: var(--muted); font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; }
+.cell {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--soft);
+  border: 2px dashed var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  line-height: 1;
+}
+.cell.on { background: radial-gradient(circle at 35% 30%, var(--pink2), var(--pink)); border: 0; color: var(--on); }
+.cell.on::after { content: "♥"; }
+.cell.new { animation: pop .8s cubic-bezier(.3, 1.8, .5, 1); }
+@keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
 .logout {
   display: block;
-  margin: 32px auto 0;
+  margin: 8px auto 0;
   background: none;
   border: 0;
   color: var(--muted);
@@ -128,69 +247,140 @@ h1 { font-size: 24px; margin: 0 0 24px; font-weight: 900; color: var(--teal); te
   cursor: pointer;
 }
 
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.stat { background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 14px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; }
+.stat { background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 0 6px 0 var(--line); padding: 16px 14px; text-align: center; }
 .stat p { margin: 0; color: var(--muted); font-size: 13px; }
-.stat strong { display: block; font-size: 24px; color: var(--teal); margin-top: 2px; }
+.stat strong { display: block; margin-top: 4px; font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif; font-weight: 400; font-size: 26px; color: var(--main); }
+.admin-tag { text-align: center; margin: -8px 0 18px; color: var(--muted); font-size: 13px; }
 
-.list { list-style: none; margin: 0; padding: 0; background: var(--card); border: 2px solid var(--line); border-radius: 18px; overflow: hidden; }
-.list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--line); }
-.list li:first-child { border-top: 0; }
-.list .when { font-weight: 700; font-size: 16px; }
-.list .who { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 2px dotted var(--line); }
+.list li:first-child { border-top: 0; padding-top: 0; }
+.list .face { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); font-size: 20px; }
+.list .txt { flex: 1; min-width: 0; }
+.list .when { font-weight: 900; font-size: 15px; }
+.list .who { color: var(--muted); font-size: 12px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .del {
   flex: none;
   font: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 900;
   color: var(--danger);
   background: transparent;
   border: 2px solid var(--danger);
-  border-radius: 12px;
+  border-radius: 999px;
   padding: 8px 14px;
   cursor: pointer;
 }
-.empty { text-align: center; color: var(--muted); padding: 28px 16px; }
-h2 { font-size: 16px; margin: 24px 0 10px; }
+.empty { text-align: center; color: var(--muted); padding: 24px 8px; }
+
+.burst { position: fixed; z-index: 50; pointer-events: none; font-size: 22px; animation: fly 1.3s ease-out forwards; }
+@keyframes fly {
+  0% { opacity: 1; transform: translate(0, 0) scale(.6); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float, .coin::after, .pig.wiggle, .dropcoin.go, .cell.new, .burst { animation: none; }
+  .fill { transition: none; }
+}
 </style>
 </head>
 <body>
-<main>
-  <h1>🎀 コツコツ貯金 🎀</h1>
+<span class="float" style="left:6%;font-size:22px;animation-duration:19s">💗</span>
+<span class="float" style="left:24%;font-size:16px;animation-duration:23s;animation-delay:-8s">🌸</span>
+<span class="float" style="left:46%;font-size:26px;animation-duration:27s;animation-delay:-14s">💕</span>
+<span class="float" style="left:68%;font-size:18px;animation-duration:21s;animation-delay:-4s">✨</span>
+<span class="float" style="left:88%;font-size:24px;animation-duration:25s;animation-delay:-11s">🎀</span>
 
-  <section id="login" class="login hidden">
-    <p>Googleアカウントでログインしてください。</p>
+<main>
+  <div class="title"><h1>コツコツ貯金</h1></div>
+
+  <section id="login" class="card login hidden">
+    <svg class="pig" viewBox="0 0 230 170" aria-hidden="true">
+      <use href="#pigshape"></use>
+    </svg>
+    <p>Googleアカウントでログインしてね</p>
     <div id="gbtn"></div>
     <div id="loginError" class="error"></div>
   </section>
 
   <section id="user" class="hidden">
-    <div class="jar">
+    <div class="card">
+      <div class="stage">
+        <div class="dropcoin" id="dropcoin">100</div>
+        <svg class="pig" id="pig" viewBox="0 0 230 170" aria-hidden="true">
+          <use href="#pigshape"></use>
+        </svg>
+      </div>
       <p class="label">いままでに貯めた金額</p>
       <p class="big"><span id="total">0</span><small>円</small></p>
-      <div class="bar"><i id="bar"></i></div>
-      <div class="sub">
+      <p class="cheer" id="cheer"></p>
+
+      <div class="track">
+        <div class="fill" id="bar"></div>
+        <span class="mark" style="left:25%">🌷</span>
+        <span class="mark" style="left:50%">🍓</span>
+        <span class="mark" style="left:75%">🎀</span>
+        <span class="mark" style="left:100%">👑</span>
+      </div>
+      <div class="ends">
         <span>目標 <b id="goal">30,000</b>円</span>
         <span>あと <b id="remaining">30,000</b>円</span>
       </div>
+
+      <button id="saveBtn" class="coin" type="button">今日の100円を貯金した 💗</button>
+      <p id="note" class="note"></p>
+      <p id="error" class="error"></p>
     </div>
-    <button id="saveBtn" class="coin" type="button">今日の100円を貯金した 💗</button>
-    <p id="note" class="note"></p>
-    <p id="error" class="error"></p>
+
+    <div class="card stamp">
+      <h2>貯金スタンプカード <span id="stampCount">0 / 300</span></h2>
+      <div class="grid" id="grid"></div>
+    </div>
   </section>
 
   <section id="admin" class="hidden">
+    <p class="admin-tag">管理者ページ 🔑</p>
     <div class="stats">
       <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span>円</strong></div>
       <div class="stat"><p>目標まであと</p><strong><span id="aRemaining">0</span>円</strong></div>
     </div>
-    <h2>貯金の記録</h2>
-    <ul id="records" class="list"></ul>
-    <p id="adminError" class="error"></p>
+    <div class="card recs">
+      <h2>貯金の記録 <span id="aCount" style="font-size:13px;color:var(--muted);font-weight:500"></span></h2>
+      <ul id="records" class="list"></ul>
+      <p id="adminError" class="error"></p>
+    </div>
   </section>
 
   <button id="logout" class="logout hidden" type="button">ログアウト</button>
 </main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffb3d1"/>
+      <stop offset="1" stop-color="#ff7eb0"/>
+    </linearGradient>
+    <g id="pigshape">
+      <ellipse cx="115" cy="160" rx="82" ry="7" fill="#000" opacity=".08"/>
+      <path d="M30 96 q-26 -4 -18 -26 q4 14 20 12" fill="none" stroke="#ff7eb0" stroke-width="7" stroke-linecap="round"/>
+      <rect x="58" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+      <rect x="130" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+      <path d="M68 50 L76 18 L102 42 Z" fill="#ff8fb8"/>
+      <path d="M126 42 L152 20 L160 54 Z" fill="#ff8fb8"/>
+      <ellipse cx="108" cy="92" rx="84" ry="62" fill="url(#pg)"/>
+      <rect x="86" y="34" width="44" height="9" rx="4.5" fill="#c2255c"/>
+      <ellipse cx="190" cy="98" rx="22" ry="17" fill="#ff9cc2"/>
+      <ellipse cx="183" cy="98" rx="3.5" ry="5" fill="#c2255c"/>
+      <ellipse cx="197" cy="98" rx="3.5" ry="5" fill="#c2255c"/>
+      <circle cx="158" cy="76" r="6.5" fill="#4a2433"/>
+      <circle cx="160" cy="74" r="2.2" fill="#fff"/>
+      <circle cx="154" cy="102" r="10" fill="#ff4f8b" opacity=".3"/>
+      <path d="M88 80 q8 -8 16 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+    </g>
+  </defs>
+</svg>
 
 <script>
 const API_BASE = "https://kotsukotsu-chokin.user-x45.workers.dev";
@@ -199,12 +389,21 @@ const CLIENT_ID = "51271346959-al6a6sprfiji96230nk3ehtm6f02bnhn.apps.googleuserc
 const $ = (id) => document.getElementById(id);
 const yen = (n) => Number(n).toLocaleString("ja-JP");
 let token = sessionStorage.getItem("idToken") || "";
+let shownTotal = 0;
+let shownCount = 0;
 
 const fmt = new Intl.DateTimeFormat("ja-JP", {
   timeZone: "Asia/Tokyo",
   year: "numeric", month: "numeric", day: "numeric",
   hour: "2-digit", minute: "2-digit", hour12: false
 });
+
+const grid = $("grid");
+for (let i = 0; i < 300; i++) {
+  const c = document.createElement("div");
+  c.className = "cell";
+  grid.appendChild(c);
+}
 
 function show(name) {
   ["login", "user", "admin"].forEach((s) => $(s).classList.toggle("hidden", s !== name));
@@ -231,12 +430,69 @@ function showLogin(message) {
   }
 }
 
+function countUp(el, from, to) {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || from === to) { el.textContent = yen(to); return; }
+  const start = performance.now();
+  const dur = 900;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = yen(Math.round(from + (to - from) * eased));
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function cheerText(p) {
+  if (p >= 100) return "目標達成！ほんとにすごい 🎉";
+  if (p >= 75) return "ゴールまであと少し！ 👑";
+  if (p >= 50) return "折り返し地点を越えたよ 🍓";
+  if (p >= 25) return "コツコツ続けてえらい！ 🌷";
+  if (p > 0) return "いい調子！その調子 ✨";
+  return "はじめの一歩、ここから 💗";
+}
+
+function burst(origin) {
+  const r = origin.getBoundingClientRect();
+  const icons = ["💗", "🌸", "✨", "🪙", "💕", "🎀"];
+  for (let i = 0; i < 26; i++) {
+    const s = document.createElement("span");
+    s.className = "burst";
+    s.textContent = icons[i % icons.length];
+    s.style.left = r.left + r.width / 2 + "px";
+    s.style.top = r.top + r.height / 2 + "px";
+    const a = Math.random() * Math.PI * 2;
+    const d = 90 + Math.random() * 150;
+    s.style.setProperty("--dx", Math.cos(a) * d + "px");
+    s.style.setProperty("--dy", Math.sin(a) * d - 60 + "px");
+    s.style.setProperty("--r", (Math.random() * 360 - 180) + "deg");
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1400);
+  }
+}
+
 function renderUser(d) {
   show("user");
-  $("total").textContent = yen(d.total);
+  countUp($("total"), shownTotal, d.total);
   $("goal").textContent = yen(d.goal);
   $("remaining").textContent = yen(d.remaining);
-  $("bar").style.width = Math.min(100, (d.total / d.goal) * 100) + "%";
+  const pct = Math.min(100, (d.total / d.goal) * 100);
+  requestAnimationFrame(() => { $("bar").style.width = pct + "%"; });
+  document.querySelectorAll(".mark").forEach((m) => {
+    m.classList.toggle("on", pct >= parseFloat(m.style.left));
+  });
+  $("cheer").textContent = cheerText(pct);
+
+  const cells = grid.children;
+  for (let i = 0; i < cells.length; i++) {
+    const on = i < d.count;
+    cells[i].classList.toggle("on", on);
+    cells[i].classList.toggle("new", on && i >= shownCount && shownCount > 0);
+  }
+  $("stampCount").textContent = d.count + " / 300";
+  shownTotal = d.total;
+  shownCount = d.count;
 
   const btn = $("saveBtn");
   if (d.remaining === 0) {
@@ -246,7 +502,7 @@ function renderUser(d) {
   } else if (d.savedToday) {
     btn.disabled = true;
     btn.textContent = "今日の貯金は完了です ✨";
-    $("note").textContent = "また明日、押してください";
+    $("note").textContent = "また明日、押してね";
   } else {
     btn.disabled = false;
     btn.textContent = "今日の100円を貯金した 💗";
@@ -258,19 +514,25 @@ function renderAdmin(d) {
   show("admin");
   $("aTotal").textContent = yen(d.total);
   $("aRemaining").textContent = yen(d.remaining);
+  $("aCount").textContent = d.records.length + "件";
 
   const ul = $("records");
   ul.textContent = "";
   if (!d.records.length) {
     const li = document.createElement("li");
     li.className = "empty";
-    li.textContent = "まだ記録がありません";
+    li.textContent = "まだ記録がありません 🌱";
     ul.appendChild(li);
     return;
   }
   d.records.forEach((r) => {
     const li = document.createElement("li");
+    const face = document.createElement("div");
+    face.className = "face";
+    face.textContent = "🪙";
+
     const box = document.createElement("div");
+    box.className = "txt";
     const when = document.createElement("div");
     when.className = "when";
     when.textContent = fmt.format(new Date(r.saved_at)) + " に100円";
@@ -285,7 +547,7 @@ function renderAdmin(d) {
     del.textContent = "削除";
     del.addEventListener("click", () => removeRecord(r, del));
 
-    li.append(box, del);
+    li.append(face, box, del);
     ul.appendChild(li);
   });
 }
@@ -316,7 +578,7 @@ $("saveBtn").addEventListener("click", async () => {
   const btn = $("saveBtn");
   btn.disabled = true;
   $("error").textContent = "";
-  const { status, body } = await api("/api/save", { method: "POST" });
+  const { status } = await api("/api/save", { method: "POST" });
   if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
   if (status === 409) { load(); return; }
   if (status !== 200) {
@@ -324,10 +586,21 @@ $("saveBtn").addEventListener("click", async () => {
     $("error").textContent = "記録できませんでした。もう一度押してください。";
     return;
   }
-  load();
+  const coin = $("dropcoin");
+  const pig = $("pig");
+  coin.classList.remove("go");
+  void coin.offsetWidth;
+  coin.classList.add("go");
+  setTimeout(() => {
+    pig.classList.remove("wiggle");
+    void pig.offsetWidth;
+    pig.classList.add("wiggle");
+    burst(pig);
+    load();
+  }, 800);
 });
 
-$("logout").addEventListener("click", () => showLogin(""));
+$("logout").addEventListener("click", () => { shownTotal = 0; shownCount = 0; showLogin(""); });
 
 function onCredential(response) {
   token = response.credential;
