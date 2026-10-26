@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>コツコツ貯金</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root {
+  --paper: #f3f6f2;
+  --card: #ffffff;
+  --ink: #1b2a29;
+  --muted: #5d6f6c;
+  --teal: #0f4c4a;
+  --teal-soft: #d6e7e3;
+  --gold: #f0b429;
+  --gold-deep: #c88a05;
+  --danger: #b3402f;
+  --line: #dbe4e0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #101a19;
+    --card: #182625;
+    --ink: #eaf2f0;
+    --muted: #9bb0ac;
+    --teal: #7fc8bf;
+    --teal-soft: #223735;
+    --line: #2a3d3a;
+    --danger: #ef8b7b;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+}
+main { max-width: 480px; margin: 0 auto; padding: 24px 20px 48px; }
+h1 { font-size: 20px; margin: 0 0 24px; font-weight: 900; color: var(--teal); }
+.hidden { display: none !important; }
+
+.login { text-align: center; padding-top: 48px; }
+.login p { color: var(--muted); line-height: 1.8; margin: 0 0 28px; }
+#gbtn { display: flex; justify-content: center; }
+
+.jar {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 28px;
+  padding: 28px 22px 24px;
+  text-align: center;
+}
+.jar .label { color: var(--muted); font-size: 15px; margin: 0; }
+.jar .big { font-size: 56px; font-weight: 900; margin: 4px 0 0; line-height: 1.15; color: var(--teal); }
+.jar .big small { font-size: 24px; margin-left: 4px; }
+.bar {
+  height: 22px;
+  background: var(--teal-soft);
+  border-radius: 999px;
+  margin: 22px 0 10px;
+  overflow: hidden;
+}
+.bar > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: repeating-linear-gradient(135deg, var(--gold) 0 12px, #f7c948 12px 24px);
+  border-radius: 999px;
+  transition: width .6s ease;
+}
+.sub { display: flex; justify-content: space-between; font-size: 15px; color: var(--muted); }
+.sub b { color: var(--ink); font-size: 17px; }
+
+.coin {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 22px 16px;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 900;
+  color: #3a2800;
+  background: var(--gold);
+  border: 0;
+  border-bottom: 6px solid var(--gold-deep);
+  border-radius: 22px;
+  cursor: pointer;
+}
+.coin:active { transform: translateY(3px); border-bottom-width: 3px; }
+.coin:disabled {
+  background: var(--teal-soft);
+  color: var(--muted);
+  border-bottom-color: var(--line);
+  cursor: default;
+  transform: none;
+}
+.coin:focus-visible, .del:focus-visible, .logout:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+
+.note { text-align: center; color: var(--muted); margin: 14px 0 0; font-size: 15px; min-height: 22px; }
+.error { color: var(--danger); text-align: center; margin: 14px 0 0; min-height: 22px; font-size: 15px; }
+
+.logout {
+  display: block;
+  margin: 32px auto 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.stat { background: var(--card); border: 2px solid var(--line); border-radius: 18px; padding: 14px; }
+.stat p { margin: 0; color: var(--muted); font-size: 13px; }
+.stat strong { display: block; font-size: 24px; color: var(--teal); margin-top: 2px; }
+
+.list { list-style: none; margin: 0; padding: 0; background: var(--card); border: 2px solid var(--line); border-radius: 18px; overflow: hidden; }
+.list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--line); }
+.list li:first-child { border-top: 0; }
+.list .when { font-weight: 700; font-size: 16px; }
+.list .who { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.del {
+  flex: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--danger);
+  background: transparent;
+  border: 2px solid var(--danger);
+  border-radius: 12px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.empty { text-align: center; color: var(--muted); padding: 28px 16px; }
+h2 { font-size: 16px; margin: 24px 0 10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>コツコツ貯金</h1>
+
+  <section id="login" class="login hidden">
+    <p>Googleアカウントでログインしてください。</p>
+    <div id="gbtn"></div>
+    <div id="loginError" class="error"></div>
+  </section>
+
+  <section id="user" class="hidden">
+    <div class="jar">
+      <p class="label">いままでに貯めた金額</p>
+      <p class="big"><span id="total">0</span><small>円</small></p>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="sub">
+        <span>目標 <b id="goal">30,000</b>円</span>
+        <span>あと <b id="remaining">30,000</b>円</span>
+      </div>
+    </div>
+    <button id="saveBtn" class="coin" type="button">今日の100円を貯金した</button>
+    <p id="note" class="note"></p>
+    <p id="error" class="error"></p>
+  </section>
+
+  <section id="admin" class="hidden">
+    <div class="stats">
+      <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span>円</strong></div>
+      <div class="stat"><p>目標まであと</p><strong><span id="aRemaining">0</span>円</strong></div>
+    </div>
+    <h2>貯金の記録</h2>
+    <ul id="records" class="list"></ul>
+    <p id="adminError" class="error"></p>
+  </section>
+
+  <button id="logout" class="logout hidden" type="button">ログアウト</button>
+</main>
+
+<script>
+const API_BASE = "https://kotsukotsu-chokin.user-x45.workers.dev";
+const CLIENT_ID = "51271346959-al6a6sprfiji96230nk3ehtm6f02bnhn.apps.googleusercontent.com";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => Number(n).toLocaleString("ja-JP");
+let token = sessionStorage.getItem("idToken") || "";
+
+const fmt = new Intl.DateTimeFormat("ja-JP", {
+  timeZone: "Asia/Tokyo",
+  year: "numeric", month: "numeric", day: "numeric",
+  hour: "2-digit", minute: "2-digit", hour12: false
+});
+
+function show(name) {
+  ["login", "user", "admin"].forEach((s) => $(s).classList.toggle("hidden", s !== name));
+  $("logout").classList.toggle("hidden", name === "login");
+}
+
+async function api(path, options = {}) {
+  const res = await fetch(API_BASE + path, {
+    ...options,
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }
+  });
+  let body = {};
+  try { body = await res.json(); } catch (e) {}
+  return { status: res.status, body };
+}
+
+function showLogin(message) {
+  token = "";
+  sessionStorage.removeItem("idToken");
+  show("login");
+  $("loginError").textContent = message || "";
+  if (window.google && google.accounts && google.accounts.id) {
+    google.accounts.id.disableAutoSelect();
+  }
+}
+
+function renderUser(d) {
+  show("user");
+  $("total").textContent = yen(d.total);
+  $("goal").textContent = yen(d.goal);
+  $("remaining").textContent = yen(d.remaining);
+  $("bar").style.width = Math.min(100, (d.total / d.goal) * 100) + "%";
+
+  const btn = $("saveBtn");
+  if (d.remaining === 0) {
+    btn.disabled = true;
+    btn.textContent = "30,000円 達成しました";
+    $("note").textContent = "おめでとうございます";
+  } else if (d.savedToday) {
+    btn.disabled = true;
+    btn.textContent = "今日の貯金は完了です";
+    $("note").textContent = "また明日、押してください";
+  } else {
+    btn.disabled = false;
+    btn.textContent = "今日の100円を貯金した";
+    $("note").textContent = "";
+  }
+}
+
+function renderAdmin(d) {
+  show("admin");
+  $("aTotal").textContent = yen(d.total);
+  $("aRemaining").textContent = yen(d.remaining);
+
+  const ul = $("records");
+  ul.textContent = "";
+  if (!d.records.length) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "まだ記録がありません";
+    ul.appendChild(li);
+    return;
+  }
+  d.records.forEach((r) => {
+    const li = document.createElement("li");
+    const box = document.createElement("div");
+    const when = document.createElement("div");
+    when.className = "when";
+    when.textContent = fmt.format(new Date(r.saved_at)) + " に100円";
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = r.saved_by;
+    box.append(when, who);
+
+    const del = document.createElement("button");
+    del.className = "del";
+    del.type = "button";
+    del.textContent = "削除";
+    del.addEventListener("click", () => removeRecord(r, del));
+
+    li.append(box, del);
+    ul.appendChild(li);
+  });
+}
+
+async function load() {
+  const { status, body } = await api("/api/status");
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 403) return showLogin("このアカウントは許可されていません。");
+  if (status !== 200) return showLogin("読み込みに失敗しました。時間をおいて再度お試しください。");
+  if (body.role === "admin") renderAdmin(body); else renderUser(body);
+}
+
+async function removeRecord(r, button) {
+  if (!confirm(fmt.format(new Date(r.saved_at)) + " の記録を削除しますか？")) return;
+  button.disabled = true;
+  $("adminError").textContent = "";
+  const { status } = await api("/api/records/" + r.id, { method: "DELETE" });
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status !== 200) {
+    button.disabled = false;
+    $("adminError").textContent = "削除できませんでした。";
+    return;
+  }
+  load();
+}
+
+$("saveBtn").addEventListener("click", async () => {
+  const btn = $("saveBtn");
+  btn.disabled = true;
+  $("error").textContent = "";
+  const { status, body } = await api("/api/save", { method: "POST" });
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 409) { load(); return; }
+  if (status !== 200) {
+    btn.disabled = false;
+    $("error").textContent = "記録できませんでした。もう一度押してください。";
+    return;
+  }
+  load();
+});
+
+$("logout").addEventListener("click", () => showLogin(""));
+
+function onCredential(response) {
+  token = response.credential;
+  sessionStorage.setItem("idToken", token);
+  load();
+}
+
+function initGoogle() {
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    setTimeout(initGoogle, 100);
+    return;
+  }
+  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCredential, auto_select: false });
+  google.accounts.id.renderButton($("gbtn"), { theme: "outline", size: "large", text: "signin_with", locale: "ja", width: 280 });
+  if (token) load(); else show("login");
+}
+
+initGoogle();
+</script>
+</body>
+</html>
