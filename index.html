@@ -217,7 +217,7 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 .note { text-align: center; color: var(--muted); margin: 18px 0 0; font-size: 15px; min-height: 22px; }
 .error { color: var(--danger); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; }
 
-.stamp h2, .recs h2 { margin: 0 0 12px; font-size: 16px; color: var(--main); display: flex; justify-content: space-between; align-items: baseline; }
+.stamp h2, .recs h2, .addcard h2 { margin: 0 0 12px; font-size: 16px; color: var(--main); display: flex; justify-content: space-between; align-items: baseline; }
 .stamp h2 span { font-size: 13px; color: var(--muted); font-weight: 500; }
 .grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; }
 .cell {
@@ -235,6 +235,37 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 .cell.new { animation: pop .8s cubic-bezier(.3, 1.8, .5, 1); }
 @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
+.addrow { display: flex; gap: 10px; align-items: stretch; }
+.addrow input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--soft);
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  padding: 12px 14px;
+  color-scheme: light dark;
+}
+.addrow input:focus-visible { outline: 3px solid var(--main); outline-offset: 2px; }
+.addbtn {
+  flex: none;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--on);
+  background: linear-gradient(180deg, var(--pink2), var(--pink));
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 5px 0 var(--deep);
+  padding: 0 22px;
+  cursor: pointer;
+}
+.addbtn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--deep); }
+.addbtn:disabled { background: var(--soft); color: var(--muted); box-shadow: 0 5px 0 var(--line); cursor: default; transform: none; }
+.addbtn:focus-visible { outline: 3px solid var(--main); outline-offset: 3px; }
+.ok { color: var(--main); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; font-weight: 900; }
 .logout {
   display: block;
   margin: 8px auto 0;
@@ -391,6 +422,15 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
       <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span>円</strong></div>
       <div class="stat"><p>目標まであと</p><strong><span id="aRemaining">0</span>円</strong></div>
     </div>
+    <div class="card addcard">
+      <h2>日時を指定して追加</h2>
+      <div class="addrow">
+        <input type="datetime-local" id="addAt" aria-label="追加する日時">
+        <button id="addBtn" class="addbtn" type="button">追加</button>
+      </div>
+      <p id="addMsg" class="error"></p>
+    </div>
+
     <div class="card recs">
       <h2>貯金の記録 <span id="aCount" style="font-size:13px;color:var(--muted);font-weight:500"></span></h2>
       <ul id="records" class="list"></ul>
@@ -402,8 +442,8 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 </main>
 
 <script>
-const API_BASE = "https://kotsukotsu-chokin.user-x45.workers.dev";
-const CLIENT_ID = "51271346959-al6a6sprfiji96230nk3ehtm6f02bnhn.apps.googleusercontent.com";
+const API_BASE = "https://okaasan-chokin.あなたのサブドメイン.workers.dev";
+const CLIENT_ID = "ここにGoogleクライアントIDを貼り付け";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => Number(n).toLocaleString("ja-JP");
@@ -660,6 +700,39 @@ $("saveBtn").addEventListener("click", async () => {
     burst(pig);
     load();
   }, 800);
+});
+
+function jstNowInput() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 16);
+}
+
+$("addAt").value = jstNowInput();
+
+$("addBtn").addEventListener("click", async () => {
+  const msg = $("addMsg");
+  const value = $("addAt").value;
+  msg.className = "error";
+  msg.textContent = "";
+  if (!value) {
+    msg.textContent = "日時を選んでください。";
+    return;
+  }
+  if (!confirm(value.replace("T", " ") + " に100円を追加しますか？")) return;
+  const btn = $("addBtn");
+  btn.disabled = true;
+  const { status, body } = await api("/api/records", {
+    method: "POST",
+    body: JSON.stringify({ savedAt: value })
+  });
+  btn.disabled = false;
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 409) { msg.textContent = "その日はすでに記録があります。"; return; }
+  if (status === 400 && body.error === "goal_reached") { msg.textContent = "目標に達しているので追加できません。"; return; }
+  if (status !== 200) { msg.textContent = "追加できませんでした。"; return; }
+  msg.className = "ok";
+  msg.textContent = "追加しました 💗";
+  $("addAt").value = jstNowInput();
+  load();
 });
 
 $("logout").addEventListener("click", () => { shownTotal = 0; shownCount = 0; showLogin(""); });
