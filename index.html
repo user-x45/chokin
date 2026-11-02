@@ -266,6 +266,23 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 .addbtn:disabled { background: var(--soft); color: var(--muted); box-shadow: 0 5px 0 var(--line); cursor: default; transform: none; }
 .addbtn:focus-visible { outline: 3px solid var(--main); outline-offset: 3px; }
 .ok { color: var(--main); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; font-weight: 900; }
+.loadcard { text-align: center; padding: 28px 20px 30px; }
+.loadcard .pig { width: 170px; margin: 0 auto; display: block; }
+.loadtext { margin: 10px 0 18px; font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif; font-size: 20px; color: var(--main); }
+.dots i { font-style: normal; display: inline-block; animation: dot 1.2s ease-in-out infinite; }
+.dots i:nth-child(2) { animation-delay: .2s; }
+.dots i:nth-child(3) { animation-delay: .4s; }
+@keyframes dot { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+.loadbar { height: 14px; width: 70%; margin: 0 auto; background: var(--soft); border: 3px solid var(--line); border-radius: 999px; overflow: hidden; }
+.loadbar i {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: repeating-linear-gradient(135deg, var(--pink) 0 10px, var(--pink2) 10px 20px);
+  animation: slide 1.3s ease-in-out infinite;
+}
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
 .logout {
   display: block;
   margin: 8px auto 0;
@@ -361,6 +378,7 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 
 @media (prefers-reduced-motion: reduce) {
   .pig .sway, .pig .bob, .pig .tail, .pig .ear1, .pig .ear2, .pig .eye, .pig .sniff, .pig .leg1, .pig .leg2, .pig.hop, .oink,
+  .dots i, .loadbar i,
   .float, .coin::after, .pig.wiggle, .dropcoin.go, .cell.new, .burst { animation: none; }
   .fill { transition: none; }
 }
@@ -381,6 +399,12 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
     <p>Googleアカウントでログインしてね</p>
     <div id="gbtn"></div>
     <div id="loginError" class="error"></div>
+  </section>
+
+  <section id="loading" class="card loadcard hidden">
+    <span data-pig="Load"></span>
+    <p class="loadtext">読み込み中<span class="dots"><i>.</i><i>.</i><i>.</i></span></p>
+    <div class="loadbar"><i></i></div>
   </section>
 
   <section id="user" class="hidden">
@@ -442,8 +466,8 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
 </main>
 
 <script>
-const API_BASE = "https://kotsukotsu-chokin.user-x45.workers.dev";
-const CLIENT_ID = "51271346959-al6a6sprfiji96230nk3ehtm6f02bnhn.apps.googleusercontent.com";
+const API_BASE = "https://okaasan-chokin.あなたのサブドメイン.workers.dev";
+const CLIENT_ID = "ここにGoogleクライアントIDを貼り付け";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => Number(n).toLocaleString("ja-JP");
@@ -457,7 +481,26 @@ const fmt = new Intl.DateTimeFormat("ja-JP", {
   hour: "2-digit", minute: "2-digit", hour12: false
 });
 
-const PIG_LINES = ["ブヒ♪", "コツコツ！", "えらい！", "ぶひぶひ💗", "ありがとう✨"];
+const PIG_LINES = [
+  "ブヒ♪",
+  "コツコツ！",
+  "えらい！",
+  "ぶひぶひ💗",
+  "ありがとう✨",
+  "今日もえらいね🌸",
+  "ちりも積もれば♪",
+  "おなかいっぱい🪙",
+  "ふとっぱら〜！",
+  "また明日ね💕"
+];
+let lastLine = -1;
+
+function nextLine() {
+  let i = Math.floor(Math.random() * PIG_LINES.length);
+  if (i === lastLine) i = (i + 1 + Math.floor(Math.random() * (PIG_LINES.length - 1))) % PIG_LINES.length;
+  lastLine = i;
+  return PIG_LINES[i];
+}
 
 function pigMarkup(name) {
   const g = "pg" + name;
@@ -495,7 +538,7 @@ document.addEventListener("click", (e) => {
   if (old) old.remove();
   const b = document.createElement("div");
   b.className = "oink";
-  b.textContent = PIG_LINES[Math.floor(Math.random() * PIG_LINES.length)];
+  b.textContent = nextLine();
   pig.parentElement.appendChild(b);
   setTimeout(() => b.remove(), 1450);
 });
@@ -508,8 +551,8 @@ for (let i = 0; i < 300; i++) {
 }
 
 function show(name) {
-  ["login", "user", "admin"].forEach((s) => $(s).classList.toggle("hidden", s !== name));
-  $("logout").classList.toggle("hidden", name === "login");
+  ["login", "loading", "user", "admin"].forEach((s) => $(s).classList.toggle("hidden", s !== name));
+  $("logout").classList.toggle("hidden", name === "login" || name === "loading");
 }
 
 async function api(path, options = {}) {
@@ -654,8 +697,14 @@ function renderAdmin(d) {
   });
 }
 
-async function load() {
+async function load(screen) {
+  let wait = Promise.resolve();
+  if (screen) {
+    show("loading");
+    wait = new Promise((r) => setTimeout(r, 700));
+  }
   const { status, body } = await api("/api/status");
+  await wait;
   if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
   if (status === 403) return showLogin("このアカウントは許可されていません。");
   if (status !== 200) return showLogin("読み込みに失敗しました。時間をおいて再度お試しください。");
@@ -740,7 +789,7 @@ $("logout").addEventListener("click", () => { shownTotal = 0; shownCount = 0; sh
 function onCredential(response) {
   token = response.credential;
   sessionStorage.setItem("idToken", token);
-  load();
+  load(true);
 }
 
 function initGoogle() {
@@ -750,7 +799,7 @@ function initGoogle() {
   }
   google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCredential, auto_select: false });
   google.accounts.id.renderButton($("gbtn"), { theme: "outline", size: "large", text: "signin_with", locale: "ja", width: 280 });
-  if (token) load(); else show("login");
+  if (token) load(true); else show("login");
 }
 
 initGoogle();
