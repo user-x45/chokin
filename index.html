@@ -283,17 +283,31 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
   animation: slide 1.3s ease-in-out infinite;
 }
 @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+.hint { margin: -4px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.list.spaced { margin-top: 16px; }
+.btns { flex: none; display: flex; flex-direction: column; gap: 6px; }
+.btns .del { padding: 7px 16px; }
+.del.yes { color: var(--main); border-color: var(--main); }
+.badge { flex: none; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 900; }
+.badge.pending { background: var(--soft); color: var(--muted); }
+.badge.approved { background: var(--pink); color: var(--on); }
+.badge.rejected { border: 2px solid var(--danger); color: var(--danger); }
 .logout {
   display: block;
   margin: 8px auto 0;
-  background: none;
-  border: 0;
-  color: var(--muted);
+  padding: 14px 34px;
   font: inherit;
-  font-size: 14px;
-  text-decoration: underline;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--main);
+  background: var(--card);
+  border: 3px solid var(--pink);
+  border-radius: 999px;
+  box-shadow: 0 5px 0 var(--pink);
   cursor: pointer;
+  transition: transform .08s, box-shadow .08s;
 }
+.logout:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--pink); }
 
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; }
 .stat { background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 0 6px 0 var(--line); padding: 16px 14px; text-align: center; }
@@ -434,6 +448,17 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
       <p id="error" class="error"></p>
     </div>
 
+    <div class="card addcard">
+      <h2>別の日の貯金をリクエスト</h2>
+      <p class="hint">今日以外の日に貯金したときは、日時を選んで送ってね。管理者が確認します。</p>
+      <div class="addrow">
+        <input type="datetime-local" id="reqAt" aria-label="リクエストする日時">
+        <button id="reqBtn" class="addbtn" type="button">送信</button>
+      </div>
+      <p id="reqMsg" class="error"></p>
+      <ul id="reqList" class="list spaced"></ul>
+    </div>
+
     <div class="card stamp">
       <h2>貯金スタンプカード <span id="stampCount">0 / 300</span></h2>
       <div class="grid" id="grid"></div>
@@ -446,6 +471,12 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
       <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span>円</strong></div>
       <div class="stat"><p>目標まであと</p><strong><span id="aRemaining">0</span>円</strong></div>
     </div>
+    <div class="card addcard">
+      <h2>承認待ちのリクエスト <span id="pendCount" style="font-size:13px;color:var(--muted);font-weight:500"></span></h2>
+      <ul id="pending" class="list"></ul>
+      <p id="pendMsg" class="error"></p>
+    </div>
+
     <div class="card addcard">
       <h2>日時を指定して追加</h2>
       <div class="addrow">
@@ -462,7 +493,7 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
     </div>
   </section>
 
-  <button id="logout" class="logout hidden" type="button">ログアウト</button>
+  <button id="logout" class="logout hidden" type="button">🚪 ログアウト</button>
 </main>
 
 <script>
@@ -619,6 +650,9 @@ function burst(origin) {
 
 function renderUser(d) {
   show("user");
+  renderRequests(d.requests || []);
+  $("reqAt").max = jstNowInput();
+  if (!$("reqAt").value) $("reqAt").value = yesterdayInput();
   countUp($("total"), shownTotal, d.total);
   $("goal").textContent = yen(d.goal);
   $("remaining").textContent = yen(d.remaining);
@@ -657,6 +691,8 @@ function renderUser(d) {
 
 function renderAdmin(d) {
   show("admin");
+  renderPending(d.pending || []);
+  $("addAt").max = jstNowInput();
   $("aTotal").textContent = yen(d.total);
   $("aRemaining").textContent = yen(d.remaining);
   $("aCount").textContent = d.records.length + "件";
@@ -751,6 +787,141 @@ $("saveBtn").addEventListener("click", async () => {
   }, 800);
 });
 
+function yesterdayInput() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+}
+
+const STATUS_TEXT = { pending: "承認待ち", approved: "承認されました", rejected: "却下されました" };
+const STATUS_FACE = { pending: "📮", approved: "✅", rejected: "🙅" };
+
+function renderRequests(list) {
+  const ul = $("reqList");
+  ul.textContent = "";
+  list.forEach((r) => {
+    const li = document.createElement("li");
+    const face = document.createElement("div");
+    face.className = "face";
+    face.textContent = STATUS_FACE[r.status] || "📮";
+    const box = document.createElement("div");
+    box.className = "txt";
+    const when = document.createElement("div");
+    when.className = "when";
+    when.textContent = fmt.format(new Date(r.target_at));
+    box.appendChild(when);
+    const badge = document.createElement("span");
+    badge.className = "badge " + r.status;
+    badge.textContent = STATUS_TEXT[r.status] || r.status;
+    li.append(face, box, badge);
+    ul.appendChild(li);
+  });
+}
+
+function renderPending(list) {
+  $("pendCount").textContent = list.length ? list.length + "件" : "";
+  const ul = $("pending");
+  ul.textContent = "";
+  if (!list.length) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "リクエストはありません 🌿";
+    ul.appendChild(li);
+    return;
+  }
+  list.forEach((r) => {
+    const li = document.createElement("li");
+    const face = document.createElement("div");
+    face.className = "face";
+    face.textContent = "📮";
+    const box = document.createElement("div");
+    box.className = "txt";
+    const when = document.createElement("div");
+    when.className = "when";
+    when.textContent = fmt.format(new Date(r.target_at)) + " に100円";
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = r.requested_by;
+    box.append(when, who);
+
+    const yes = document.createElement("button");
+    yes.className = "del yes";
+    yes.type = "button";
+    yes.textContent = "承認";
+    const no = document.createElement("button");
+    no.className = "del";
+    no.type = "button";
+    no.textContent = "却下";
+    yes.addEventListener("click", () => decide(r, "approve", [yes, no]));
+    no.addEventListener("click", () => decide(r, "reject", [yes, no]));
+    const btns = document.createElement("div");
+    btns.className = "btns";
+    btns.append(yes, no);
+
+    li.append(face, box, btns);
+    ul.appendChild(li);
+  });
+}
+
+async function decide(r, action, buttons) {
+  const label = action === "approve" ? "承認" : "却下";
+  if (!confirm(fmt.format(new Date(r.target_at)) + " のリクエストを" + label + "しますか？")) return;
+  const msg = $("pendMsg");
+  msg.textContent = "";
+  buttons.forEach((b) => { b.disabled = true; });
+  const { status, body } = await api("/api/requests/" + r.id + "/" + action, { method: "POST" });
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 409) {
+    buttons.forEach((b) => { b.disabled = false; });
+    msg.textContent = "その日はすでに記録があります。却下してください。";
+    return;
+  }
+  if (status === 400 && body.error === "goal_reached") {
+    buttons.forEach((b) => { b.disabled = false; });
+    msg.textContent = "目標に達しているので承認できません。";
+    return;
+  }
+  if (status !== 200) {
+    buttons.forEach((b) => { b.disabled = false; });
+    msg.textContent = "処理できませんでした。";
+    return;
+  }
+  load();
+}
+
+$("reqBtn").addEventListener("click", async () => {
+  const msg = $("reqMsg");
+  const value = $("reqAt").value;
+  msg.className = "error";
+  msg.textContent = "";
+  if (!value) {
+    msg.textContent = "日時を選んでください。";
+    return;
+  }
+  if (!confirm(value.replace("T", " ") + " の貯金をリクエストしますか？")) return;
+  const btn = $("reqBtn");
+  btn.disabled = true;
+  const { status, body } = await api("/api/requests", {
+    method: "POST",
+    body: JSON.stringify({ savedAt: value })
+  });
+  btn.disabled = false;
+  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  const errors = {
+    future: "未来の日時は選べません。",
+    today: "今日の分は「今日の100円を貯金した」ボタンを押してね。",
+    already_saved: "その日はすでに記録があります。",
+    already_requested: "その日はすでにリクエスト中です。",
+    goal_reached: "目標に達しているのでリクエストできません。",
+    invalid_datetime: "日時を正しく選んでください。"
+  };
+  if (status !== 200) {
+    msg.textContent = errors[body.error] || "送信できませんでした。";
+    return;
+  }
+  msg.className = "ok";
+  msg.textContent = "リクエストを送りました 💌";
+  load();
+});
+
 function jstNowInput() {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 16);
 }
@@ -776,6 +947,7 @@ $("addBtn").addEventListener("click", async () => {
   btn.disabled = false;
   if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
   if (status === 409) { msg.textContent = "その日はすでに記録があります。"; return; }
+  if (status === 400 && body.error === "future") { msg.textContent = "未来の日時は追加できません。"; return; }
   if (status === 400 && body.error === "goal_reached") { msg.textContent = "目標に達しているので追加できません。"; return; }
   if (status !== 200) { msg.textContent = "追加できませんでした。"; return; }
   msg.className = "ok";
