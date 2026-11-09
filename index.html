@@ -226,6 +226,24 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .stat strong { display: block; margin-top: 4px; font-size: 26px; font-weight: 900; color: var(--accent-deep); }
 .stat strong small { font-size: 13px; font-weight: 700; margin-left: 3px; }
 
+.calnav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.calnav b { font-size: 15px; }
+.calnav button { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--line); background: var(--card); color: var(--accent-deep); font: inherit; font-size: 16px; font-weight: 900; cursor: pointer; padding: 0; }
+.calnav button:disabled { opacity: .35; cursor: default; }
+.calsum { text-align: center; color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+.calgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dow { text-align: center; font-size: 11px; color: var(--muted); padding-bottom: 2px; }
+.day { aspect-ratio: 1; border: 0; border-radius: 50%; background: transparent; color: var(--ink); font: inherit; font-size: 13px; padding: 0; cursor: pointer; }
+.day.blank { visibility: hidden; cursor: default; }
+.day.saved { background: var(--accent); color: var(--accent-ink); font-weight: 900; }
+.day.today { box-shadow: inset 0 0 0 2px var(--accent-deep); }
+.day.sel { outline: 3px solid var(--accent-deep); outline-offset: 1px; }
+.day:disabled { color: var(--muted); opacity: .45; cursor: default; }
+.caldetail { margin-top: 14px; height: 64px; padding: 0 14px; border-radius: 18px; background: var(--soft); display: flex; align-items: center; gap: 12px; }
+.caldetail .txt { flex: 1; min-width: 0; }
+.caldetail .when { font-weight: 700; font-size: 14px; }
+.caldetail .who { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.caldetail .none { flex: 1; text-align: center; color: var(--muted); font-size: 13px; }
 .login { text-align: center; }
 .login h2 { display: block; font-size: 24px; line-height: 1.4; margin: 6px 0 10px; }
 .login p { color: var(--muted); line-height: 1.8; margin: 0 0 22px; font-size: 14px; }
@@ -354,6 +372,11 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
     </section>
 
     <section>
+      <h2>貯金カレンダー <span data-cal-count></span></h2>
+      <div class="cal" data-cal></div>
+    </section>
+
+    <section>
       <h2>別の日の貯金をリクエスト</h2>
       <p class="hint">今日以外の日に貯金したときは、日時を選んで送信してください。管理者が確認します。</p>
       <div class="addrow">
@@ -387,9 +410,8 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
     </section>
 
     <section>
-      <h2>貯金の記録 <span id="aCount"></span></h2>
-      <ul id="records" class="list"></ul>
-      <p id="adminError" class="error"></p>
+      <h2>貯金カレンダー <span data-cal-count></span></h2>
+      <div class="cal" data-cal></div>
     </section>
   </div>
 
@@ -544,10 +566,120 @@ function yesterdayInput() {
   return new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
 }
 
+let records = [];
+let calAdmin = false;
+let calMonth = "";
+let calDay = "";
+
+function setRecords(list, admin) {
+  records = list || [];
+  calAdmin = admin;
+  if (!calMonth) calMonth = jstNowInput().slice(0, 7);
+  renderCal();
+}
+
+function monthShift(ym, delta) {
+  const [y, m] = ym.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1 + delta, 1));
+  return t.getUTCFullYear() + "-" + String(t.getUTCMonth() + 1).padStart(2, "0");
+}
+
+function node(tag, cls, text) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
+function renderCal() {
+  const now = jstNowInput();
+  const nowM = now.slice(0, 7);
+  const today = now.slice(0, 10);
+  const map = {};
+  records.forEach((r) => { map[r.day] = r; });
+  const earliest = records.reduce((a, r) => (r.day < a ? r.day : a), today).slice(0, 7);
+  const minM = earliest < nowM ? earliest : nowM;
+  if (calMonth < minM) calMonth = minM;
+  if (calMonth > nowM) calMonth = nowM;
+  const [y, m] = calMonth.split("-").map(Number);
+  const lead = new Date(Date.UTC(y, m - 1, 1)).getUTCDay();
+  const total = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const monthCount = records.filter((r) => r.day.startsWith(calMonth)).length;
+
+  document.querySelectorAll("[data-cal-count]").forEach((el) => { el.textContent = records.length + "回"; });
+  document.querySelectorAll("[data-cal]").forEach((host) => {
+    host.textContent = "";
+
+    const nav = node("div", "calnav");
+    const prev = node("button", "", "<");
+    prev.type = "button";
+    prev.setAttribute("aria-label", "前の月");
+    prev.disabled = calMonth <= minM;
+    prev.addEventListener("click", () => { calMonth = monthShift(calMonth, -1); calDay = ""; renderCal(); });
+    const next = node("button", "", ">");
+    next.type = "button";
+    next.setAttribute("aria-label", "次の月");
+    next.disabled = calMonth >= nowM;
+    next.addEventListener("click", () => { calMonth = monthShift(calMonth, 1); calDay = ""; renderCal(); });
+    nav.append(prev, node("b", "", y + "年" + m + "月"), next);
+
+    const sum = node("p", "calsum", "この月 " + monthCount + "回 / " + yen(monthCount * 100) + "円");
+
+    const g = node("div", "calgrid");
+    ["日", "月", "火", "水", "木", "金", "土"].forEach((w) => g.appendChild(node("div", "dow", w)));
+    for (let i = 0; i < 42; i++) {
+      const d = i - lead + 1;
+      if (d < 1 || d > total) {
+        const blank = node("button", "day blank");
+        blank.type = "button";
+        blank.disabled = true;
+        blank.tabIndex = -1;
+        g.appendChild(blank);
+        continue;
+      }
+      const key = calMonth + "-" + String(d).padStart(2, "0");
+      const b = node("button", "day", String(d));
+      b.type = "button";
+      if (map[key]) b.classList.add("saved");
+      if (key === today) b.classList.add("today");
+      if (key === calDay) b.classList.add("sel");
+      if (key > today) b.disabled = true;
+      b.addEventListener("click", () => { calDay = key; renderCal(); });
+      g.appendChild(b);
+    }
+
+    const detail = node("div", "caldetail");
+    const r = calDay ? map[calDay] : null;
+    if (!calDay) {
+      detail.appendChild(node("div", "none", "日付を選ぶと、その日の記録が見られます"));
+    } else if (!r) {
+      detail.appendChild(node("div", "none", calDay.replace(/-/g, "/") + " の記録はありません"));
+    } else {
+      const box = node("div", "txt");
+      box.append(
+        node("div", "when", fmt.format(new Date(r.saved_at)) + " に100円"),
+        node("div", "who", r.by === "admin" ? "管理者が追加" : "お母さんが記録")
+      );
+      detail.appendChild(box);
+      if (calAdmin) {
+        const del = node("button", "del", "削除");
+        del.type = "button";
+        del.addEventListener("click", () => removeRecord(r, del));
+        detail.appendChild(del);
+      }
+    }
+
+    const err = node("p", "error");
+    err.setAttribute("data-cal-error", "");
+    host.append(nav, sum, g, detail, err);
+  });
+}
+
 const STATUS_TEXT = { pending: "承認待ち", approved: "承認済み", rejected: "却下" };
 
 function renderUser(d) {
   show("user");
+  setRecords(d.records, false);
   renderRequests(d.requests || []);
   $("reqAt").max = jstNowInput();
   if (!$("reqAt").value) $("reqAt").value = yesterdayInput();
@@ -650,42 +782,11 @@ function renderPending(list) {
 
 function renderAdmin(d) {
   show("admin");
+  setRecords(d.records, true);
   renderPending(d.pending || []);
   $("addAt").max = jstNowInput();
   $("aTotal").textContent = yen(d.total);
   $("aRemaining").textContent = yen(d.remaining);
-  $("aCount").textContent = d.records.length + "件";
-
-  const ul = $("records");
-  ul.textContent = "";
-  if (!d.records.length) {
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "まだ記録がありません";
-    ul.appendChild(li);
-    return;
-  }
-  d.records.forEach((r) => {
-    const li = document.createElement("li");
-    const box = document.createElement("div");
-    box.className = "txt";
-    const when = document.createElement("div");
-    when.className = "when";
-    when.textContent = fmt.format(new Date(r.saved_at)) + " に100円";
-    const who = document.createElement("div");
-    who.className = "who";
-    who.textContent = r.saved_by;
-    box.append(when, who);
-
-    const del = document.createElement("button");
-    del.className = "del";
-    del.type = "button";
-    del.textContent = "削除";
-    del.addEventListener("click", () => removeRecord(r, del));
-
-    li.append(box, del);
-    ul.appendChild(li);
-  });
 }
 
 async function load(screen) {
@@ -706,12 +807,11 @@ async function load(screen) {
 async function removeRecord(r, button) {
   if (!confirm(fmt.format(new Date(r.saved_at)) + " の記録を削除しますか？")) return;
   button.disabled = true;
-  $("adminError").textContent = "";
   const { status } = await api("/api/records/" + r.id, { method: "DELETE" });
   if (status === 401) return reauth();
   if (status !== 200) {
     button.disabled = false;
-    $("adminError").textContent = "削除できませんでした。";
+    document.querySelectorAll("[data-cal-error]").forEach((e) => { e.textContent = "削除できませんでした。"; });
     return;
   }
   load();
