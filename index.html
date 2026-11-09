@@ -6,38 +6,37 @@
 <title>コツコツ貯金</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
-  --paper: #ffe9f1;
+  --bg: #fff4ef;
   --card: #ffffff;
-  --ink: #4a2433;
-  --muted: #8a6474;
-  --main: #d6336c;
-  --soft: #ffdbe8;
-  --pink: #ff7eb0;
-  --pink2: #ffa6c8;
-  --deep: #c2255c;
-  --on: #ffffff;
-  --danger: #c0392b;
-  --line: #f9b9d0;
-  --dot: #ffd0e2;
+  --ink: #4b3238;
+  --muted: #9a7f86;
+  --line: #f3d9d4;
+  --accent: #ef7f93;
+  --accent-deep: #d95f77;
+  --accent-ink: #ffffff;
+  --soft: #fde6e3;
+  --pig: #f8a5b4;
+  --pig-dark: #e8768c;
+  --danger: #c4493c;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #2a1520;
-    --card: #3a1f2d;
-    --ink: #ffe8f0;
-    --muted: #d9a8bb;
-    --main: #ff9cc2;
-    --soft: #4d2a3b;
-    --pink: #ff8fb8;
-    --pink2: #ffb0cd;
-    --on: #4a1030;
-    --line: #6a3a50;
+    --bg: #2a1d21;
+    --card: #36262b;
+    --ink: #fbeaec;
+    --muted: #c4a3aa;
+    --line: #4d363d;
+    --accent: #f59aab;
+    --accent-deep: #d9728a;
+    --accent-ink: #3d1620;
+    --soft: #443037;
+    --pig: #f5a3b3;
+    --pig-dark: #e0728a;
     --danger: #ff9a8a;
-    --dot: #3a1f2d;
   }
 }
 * { box-sizing: border-box; }
@@ -45,197 +44,75 @@ html, body { margin: 0; }
 body {
   font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
   color: var(--ink);
+  background: var(--bg);
   min-height: 100vh;
-  background-color: var(--paper);
-  background-image: radial-gradient(var(--dot) 2.5px, transparent 2.5px);
-  background-size: 24px 24px;
   padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
-  overflow-x: hidden;
+  font-variant-numeric: tabular-nums;
 }
 .hidden { display: none !important; }
-main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 20px 18px 56px; }
+main { max-width: 460px; margin: 0 auto; padding: 26px 18px 64px; }
+header { text-align: center; margin-bottom: 22px; }
+header h1 { display: inline-block; margin: 0; padding: 8px 22px; font-size: 16px; font-weight: 900; color: var(--accent-ink); background: var(--accent); border-radius: 999px; letter-spacing: .06em; }
+header span { display: block; margin-top: 8px; font-size: 12px; color: var(--muted); }
 
-.float { position: fixed; bottom: -40px; z-index: 0; pointer-events: none; opacity: .5; animation: rise linear infinite; }
-@keyframes rise { to { transform: translateY(-115vh) rotate(25deg); } }
+section { margin-bottom: 20px; background: var(--card); border-radius: 28px; padding: 22px; box-shadow: 0 4px 0 var(--line); }
+h2 { margin: 0 0 14px; font-size: 15px; font-weight: 900; display: flex; justify-content: space-between; align-items: baseline; }
+h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: var(--soft); padding: 3px 10px; border-radius: 999px; }
+.hint { margin: -6px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 
-.title { text-align: center; margin: 4px 0 22px; }
-.title h1 {
-  display: inline-block;
-  margin: 0;
-  padding: 10px 26px 12px;
-  font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
-  font-weight: 400;
-  font-size: 26px;
-  color: var(--on);
-  background: linear-gradient(180deg, var(--pink2), var(--pink));
-  border-radius: 999px;
-  box-shadow: 0 6px 0 var(--deep);
-  text-shadow: 0 2px 0 var(--deep);
-}
+.mascot { display: block; width: 150px; height: auto; margin: 0 auto 6px; overflow: visible; }
+.mascot .body { fill: var(--pig); }
+.mascot .dark { fill: var(--pig-dark); }
+.mascot .eye { fill: #4b3238; }
+.mascot .coin { fill: #ffd76a; stroke: #e9b23a; stroke-width: 2; }
+.mascot .bob { animation: bob 3s ease-in-out infinite; transform-origin: 80px 90px; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
-.card {
-  background: var(--card);
-  border: 3px solid var(--line);
-  border-radius: 32px;
-  box-shadow: 0 7px 0 var(--line);
-  padding: 20px;
-  margin-bottom: 26px;
-}
+.hero { text-align: center; }
+.label { margin: 0; color: var(--muted); font-size: 13px; }
+.big { margin: 2px 0 0; font-size: 62px; font-weight: 900; line-height: 1.1; letter-spacing: -.02em; color: var(--accent-deep); }
+.big small { font-size: 20px; font-weight: 700; margin-left: 4px; }
+.cheer { margin: 12px auto 0; width: fit-content; max-width: 100%; padding: 7px 16px; border-radius: 999px; background: var(--soft); color: var(--accent-deep); font-size: 14px; font-weight: 700; }
 
-.login { text-align: center; }
-.login .pig { width: 180px; margin: 0 auto 6px; display: block; }
-.login p { color: var(--muted); line-height: 1.8; margin: 0 0 22px; }
-#gbtn { display: flex; justify-content: center; }
-
-.stage { position: relative; text-align: center; }
-.pig { width: 210px; display: block; margin: 0 auto; overflow: visible; }
-.pig.wiggle { animation: wiggle .7s ease; }
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0) scale(1); }
-  20% { transform: rotate(-6deg) scale(1.06); }
-  45% { transform: rotate(5deg) scale(1.04); }
-  70% { transform: rotate(-3deg) scale(1.02); }
-}
-.dropcoin {
-  position: absolute;
-  left: calc(50% - 24px);
-  top: -30px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc93c 55%, #e29a00);
-  border: 3px solid #e29a00;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  font-size: 13px;
-  color: #a86b00;
-  opacity: 0;
-}
-.dropcoin.go { animation: drop .9s cubic-bezier(.5, 0, 1, .6) forwards; }
-@keyframes drop {
-  0% { opacity: 1; transform: translateY(0) rotate(0); }
-  80% { opacity: 1; transform: translateY(78px) rotate(540deg); }
-  100% { opacity: 0; transform: translateY(92px) rotate(600deg) scale(.6); }
-}
-
-.label { margin: 8px 0 0; color: var(--muted); font-size: 14px; text-align: center; }
-.big {
-  margin: 0;
-  text-align: center;
-  font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif;
-  font-size: 58px;
-  line-height: 1.2;
-  color: var(--main);
-}
-.big small { font-size: 22px; margin-left: 4px; }
-.cheer {
-  margin: 10px auto 0;
-  width: fit-content;
-  max-width: 100%;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: var(--soft);
-  color: var(--main);
-  font-weight: 900;
-  font-size: 15px;
-  text-align: center;
-}
-
-.track { position: relative; height: 26px; margin: 24px 4px 8px; background: var(--soft); border-radius: 999px; border: 3px solid var(--line); }
-.fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 0;
-  min-width: 0;
-  border-radius: 999px;
-  background: repeating-linear-gradient(135deg, var(--pink) 0 12px, var(--pink2) 12px 24px);
-  transition: width 1s cubic-bezier(.2, .8, .2, 1);
-}
-.mark {
-  position: absolute;
-  top: 50%;
-  width: 26px;
-  height: 26px;
-  margin: -13px 0 0 -13px;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  background: var(--card);
-  border: 3px solid var(--line);
-  border-radius: 50%;
-  filter: grayscale(1);
-  opacity: .7;
-}
-.mark.on { filter: none; opacity: 1; border-color: var(--pink); }
-.ends { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); padding: 0 4px; }
-.ends b { color: var(--ink); font-size: 17px; }
+.track { position: relative; height: 14px; margin: 38px 6px 12px; background: var(--soft); border-radius: 999px; }
+.fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); border-radius: 999px; transition: width 1s cubic-bezier(.2, .8, .2, 1); }
+.tick { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--card); border: 3px solid var(--line); }
+.tick i { position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 11px; color: var(--muted); }
+.tick.on { background: var(--card); border-color: var(--accent-deep); }
+.tick.on i { color: var(--accent-deep); font-weight: 700; }
+.ends { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding: 0 4px; }
+.ends b { color: var(--ink); font-weight: 900; font-size: 15px; }
 
 .coin {
-  position: relative;
   display: block;
   width: 100%;
   margin-top: 24px;
-  padding: 22px 12px 24px;
+  padding: 18px 12px;
   font: inherit;
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 900;
-  color: var(--on);
-  background: linear-gradient(180deg, var(--pink2), var(--pink));
+  color: var(--accent-ink);
+  background: var(--accent);
   border: 0;
   border-radius: 999px;
-  box-shadow: 0 8px 0 var(--deep);
-  text-shadow: 0 2px 0 var(--deep);
+  box-shadow: 0 6px 0 var(--accent-deep);
   cursor: pointer;
-  overflow: hidden;
   transition: transform .08s, box-shadow .08s;
 }
-.coin::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent);
-  transform: skewX(-20deg);
-  animation: shine 3.6s ease-in-out infinite;
-}
-@keyframes shine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
-.coin:active { transform: translateY(6px); box-shadow: 0 2px 0 var(--deep); }
-.coin:disabled {
-  background: var(--soft);
-  color: var(--muted);
-  box-shadow: 0 8px 0 var(--line);
-  text-shadow: none;
-  cursor: default;
-  transform: none;
-}
-.coin:disabled::after { display: none; }
-.coin:focus-visible, .del:focus-visible, .logout:focus-visible { outline: 3px solid var(--main); outline-offset: 3px; }
+.coin:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--accent-deep); }
+.coin:disabled { background: var(--soft); color: var(--muted); box-shadow: 0 6px 0 var(--line); cursor: default; transform: none; }
+.coin:focus-visible, .addbtn:focus-visible, .del:focus-visible, .logout:focus-visible, .addrow input:focus-visible { outline: 3px solid var(--accent-deep); outline-offset: 3px; }
+.note { margin: 18px 0 0; text-align: center; color: var(--muted); font-size: 13px; min-height: 20px; }
+.error { color: var(--danger); margin: 12px 0 0; min-height: 20px; font-size: 13px; }
+.ok { color: var(--accent-deep); margin: 12px 0 0; min-height: 20px; font-size: 13px; font-weight: 700; }
 
-.note { text-align: center; color: var(--muted); margin: 18px 0 0; font-size: 15px; min-height: 22px; }
-.error { color: var(--danger); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; }
-
-.stamp h2, .recs h2, .addcard h2 { margin: 0 0 12px; font-size: 16px; color: var(--main); display: flex; justify-content: space-between; align-items: baseline; }
-.stamp h2 span { font-size: 13px; color: var(--muted); font-weight: 500; }
-.grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; }
-.cell {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--soft);
-  border: 2px dashed var(--line);
-  display: grid;
-  place-items: center;
-  font-size: 11px;
-  line-height: 1;
-}
-.cell.on { background: radial-gradient(circle at 35% 30%, var(--pink2), var(--pink)); border: 0; color: var(--on); }
-.cell.on::after { content: "♥"; }
-.cell.new { animation: pop .8s cubic-bezier(.3, 1.8, .5, 1); }
+.grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 5px; }
+.cell { aspect-ratio: 1; border-radius: 50%; background: var(--soft); }
+.cell.on { background: radial-gradient(circle at 35% 30%, #ffd0d8, var(--accent)); }
+.cell.new { animation: pop .6s cubic-bezier(.3, 1.8, .5, 1); }
 @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
-.addrow { display: flex; gap: 10px; align-items: stretch; }
+.addrow { display: flex; gap: 10px; }
 .addrow input {
   flex: 1;
   min-width: 0;
@@ -243,257 +120,211 @@ main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding
   font-size: 16px;
   color: var(--ink);
   background: var(--soft);
-  border: 3px solid var(--line);
+  border: 2px solid var(--line);
   border-radius: 18px;
-  padding: 12px 14px;
+  padding: 11px 14px;
   color-scheme: light dark;
 }
-.addrow input:focus-visible { outline: 3px solid var(--main); outline-offset: 2px; }
 .addbtn {
   flex: none;
   font: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 900;
-  color: var(--on);
-  background: linear-gradient(180deg, var(--pink2), var(--pink));
+  color: var(--accent-ink);
+  background: var(--accent);
   border: 0;
   border-radius: 999px;
-  box-shadow: 0 5px 0 var(--deep);
+  box-shadow: 0 4px 0 var(--accent-deep);
   padding: 0 22px;
   cursor: pointer;
 }
-.addbtn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--deep); }
-.addbtn:disabled { background: var(--soft); color: var(--muted); box-shadow: 0 5px 0 var(--line); cursor: default; transform: none; }
-.addbtn:focus-visible { outline: 3px solid var(--main); outline-offset: 3px; }
-.ok { color: var(--main); text-align: center; margin: 12px 0 0; min-height: 22px; font-size: 15px; font-weight: 900; }
-.loadcard { text-align: center; padding: 28px 20px 30px; }
-.loadcard .pig { width: 170px; margin: 0 auto; display: block; }
-.loadtext { margin: 10px 0 18px; font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif; font-size: 20px; color: var(--main); }
-.dots i { font-style: normal; display: inline-block; animation: dot 1.2s ease-in-out infinite; }
-.dots i:nth-child(2) { animation-delay: .2s; }
-.dots i:nth-child(3) { animation-delay: .4s; }
-@keyframes dot { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
-.loadbar { height: 14px; width: 70%; margin: 0 auto; background: var(--soft); border: 3px solid var(--line); border-radius: 999px; overflow: hidden; }
-.loadbar i {
-  display: block;
-  height: 100%;
-  width: 40%;
-  border-radius: 999px;
-  background: repeating-linear-gradient(135deg, var(--pink) 0 10px, var(--pink2) 10px 20px);
-  animation: slide 1.3s ease-in-out infinite;
-}
-@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
-.hint { margin: -4px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
-.list.spaced { margin-top: 16px; }
-.btns { flex: none; display: flex; flex-direction: column; gap: 6px; }
-.btns .del { padding: 7px 16px; }
-.del.yes { color: var(--main); border-color: var(--main); }
-.badge { flex: none; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 900; }
-.badge.pending { background: var(--soft); color: var(--muted); }
-.badge.approved { background: var(--pink); color: var(--on); }
-.badge.rejected { border: 2px solid var(--danger); color: var(--danger); }
-.logout {
-  display: block;
-  margin: 8px auto 0;
-  padding: 14px 34px;
-  font: inherit;
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--main);
-  background: var(--card);
-  border: 3px solid var(--pink);
-  border-radius: 999px;
-  box-shadow: 0 5px 0 var(--pink);
-  cursor: pointer;
-  transition: transform .08s, box-shadow .08s;
-}
-.logout:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--pink); }
-
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; }
-.stat { background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 0 6px 0 var(--line); padding: 16px 14px; text-align: center; }
-.stat p { margin: 0; color: var(--muted); font-size: 13px; }
-.stat strong { display: block; margin-top: 4px; font-family: "Mochiy Pop One", "Zen Maru Gothic", sans-serif; font-weight: 400; font-size: 26px; color: var(--main); }
-.admin-tag { text-align: center; margin: -8px 0 18px; color: var(--muted); font-size: 13px; }
+.addbtn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent-deep); }
+.addbtn:disabled { background: var(--soft); color: var(--muted); box-shadow: 0 4px 0 var(--line); cursor: default; transform: none; }
 
 .list { list-style: none; margin: 0; padding: 0; }
+.list.spaced { margin-top: 16px; }
 .list li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 2px dotted var(--line); }
 .list li:first-child { border-top: 0; padding-top: 0; }
-.list .face { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); font-size: 20px; }
 .list .txt { flex: 1; min-width: 0; }
-.list .when { font-weight: 900; font-size: 15px; }
+.list .when { font-weight: 700; font-size: 14px; }
 .list .who { color: var(--muted); font-size: 12px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty { text-align: center; color: var(--muted); padding: 20px 8px !important; justify-content: center; font-size: 13px; }
 .del {
   flex: none;
   font: inherit;
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--danger);
   background: transparent;
   border: 2px solid var(--danger);
   border-radius: 999px;
-  padding: 8px 14px;
+  padding: 6px 14px;
   cursor: pointer;
 }
-.empty { text-align: center; color: var(--muted); padding: 24px 8px; }
+.del.yes { color: var(--accent-deep); border-color: var(--accent-deep); }
+.del:disabled { opacity: .4; cursor: default; }
+.btns { flex: none; display: flex; flex-direction: column; gap: 6px; }
+.badge { flex: none; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+.badge.pending { background: var(--soft); color: var(--muted); }
+.badge.approved { background: var(--accent); color: var(--accent-ink); }
+.badge.rejected { border: 2px solid var(--danger); color: var(--danger); }
 
-.burst { position: fixed; z-index: 50; pointer-events: none; font-size: 22px; animation: fly 1.3s ease-out forwards; }
-@keyframes fly {
-  0% { opacity: 1; transform: translate(0, 0) scale(.6); }
-  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1.2); }
-}
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.stat { background: var(--card); border-radius: 24px; box-shadow: 0 4px 0 var(--line); padding: 16px 14px; text-align: center; }
+.stat p { margin: 0; color: var(--muted); font-size: 12px; }
+.stat strong { display: block; margin-top: 4px; font-size: 26px; font-weight: 900; color: var(--accent-deep); }
+.stat strong small { font-size: 13px; font-weight: 700; margin-left: 3px; }
 
-.stage, .login { position: relative; }
-.pig { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.pig .sway { animation: sway 9s ease-in-out infinite; }
-.pig .bob { transform-origin: 115px 150px; transform-box: view-box; animation: bob 2.4s ease-in-out infinite; }
-.pig .tail { transform-origin: 32px 96px; transform-box: view-box; animation: tailwag .7s ease-in-out infinite alternate; }
-.pig .ear1 { transform-origin: 84px 46px; transform-box: view-box; animation: flick 5s ease-in-out infinite; }
-.pig .ear2 { transform-origin: 140px 46px; transform-box: view-box; animation: flick 5s ease-in-out 1.2s infinite; }
-.pig .eye { transform-origin: 158px 76px; transform-box: view-box; animation: blink 4s infinite; }
-.pig .sniff { transform-origin: 190px 98px; transform-box: view-box; animation: sniff 1.6s ease-in-out infinite; }
-.pig .leg1 { transform-origin: 71px 128px; transform-box: view-box; animation: step 1.2s ease-in-out infinite; }
-.pig .leg2 { transform-origin: 143px 128px; transform-box: view-box; animation: step 1.2s ease-in-out .6s infinite; }
-.pig.hop { animation: hop .65s cubic-bezier(.3, 1.4, .5, 1); }
-@keyframes sway { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(7px); } 75% { transform: translateX(-7px); } }
-@keyframes bob { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-5px) scale(.99, 1.025); } }
-@keyframes tailwag { from { transform: rotate(-16deg); } to { transform: rotate(18deg); } }
-@keyframes flick { 0%, 80%, 100% { transform: rotate(0); } 86% { transform: rotate(-14deg); } 92% { transform: rotate(5deg); } }
-@keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.08); } }
-@keyframes sniff { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07, 1.1); } }
-@keyframes step { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-7deg); } }
-@keyframes hop {
-  0% { transform: translateY(0) rotate(0); }
-  35% { transform: translateY(-28px) rotate(-7deg); }
-  70% { transform: translateY(0) rotate(4deg); }
-  100% { transform: translateY(0) rotate(0); }
-}
-.oink {
-  position: absolute;
-  left: 58%;
-  top: 8px;
-  z-index: 5;
-  padding: 7px 14px;
-  border-radius: 18px 18px 18px 4px;
-  background: var(--card);
-  border: 3px solid var(--pink);
-  color: var(--main);
+.login { text-align: center; }
+.login h2 { display: block; font-size: 24px; line-height: 1.4; margin: 6px 0 10px; }
+.login p { color: var(--muted); line-height: 1.8; margin: 0 0 22px; font-size: 14px; }
+#gbtn { display: flex; justify-content: center; }
+.loading { text-align: center; }
+.loading p { margin: 0 0 16px; color: var(--accent-deep); font-weight: 700; font-size: 15px; }
+.loadbar { height: 12px; width: 70%; margin: 0 auto; background: var(--soft); border-radius: 999px; overflow: hidden; }
+.loadbar i { display: block; height: 100%; width: 35%; background: var(--accent); border-radius: 999px; animation: slide 1.2s ease-in-out infinite; }
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
+
+.logout {
+  display: block;
+  margin: 8px auto 0;
+  padding: 12px 30px;
+  font: inherit;
+  font-size: 14px;
   font-weight: 900;
-  font-size: 15px;
-  pointer-events: none;
-  white-space: nowrap;
-  animation: oink 1.4s ease-out forwards;
+  color: var(--accent-deep);
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--accent);
+  cursor: pointer;
 }
-@keyframes oink {
-  0% { opacity: 0; transform: translateY(10px) scale(.6); }
-  20% { opacity: 1; transform: translateY(0) scale(1.05); }
-  80% { opacity: 1; transform: translateY(-10px) scale(1); }
-  100% { opacity: 0; transform: translateY(-20px) scale(1); }
-}
-
+.logout:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent); }
 @media (prefers-reduced-motion: reduce) {
-  .pig .sway, .pig .bob, .pig .tail, .pig .ear1, .pig .ear2, .pig .eye, .pig .sniff, .pig .leg1, .pig .leg2, .pig.hop, .oink,
-  .dots i, .loadbar i,
-  .float, .coin::after, .pig.wiggle, .dropcoin.go, .cell.new, .burst { animation: none; }
   .fill { transition: none; }
+  .cell.new, .loadbar i, .mascot .bob { animation: none; }
 }
 </style>
 </head>
 <body>
-<span class="float" style="left:6%;font-size:22px;animation-duration:19s">💗</span>
-<span class="float" style="left:24%;font-size:16px;animation-duration:23s;animation-delay:-8s">🌸</span>
-<span class="float" style="left:46%;font-size:26px;animation-duration:27s;animation-delay:-14s">💕</span>
-<span class="float" style="left:68%;font-size:18px;animation-duration:21s;animation-delay:-4s">✨</span>
-<span class="float" style="left:88%;font-size:24px;animation-duration:25s;animation-delay:-11s">🎀</span>
-
 <main>
-  <div class="title"><h1>コツコツ貯金</h1></div>
+  <header><h1>コツコツ貯金</h1><span id="tag"></span></header>
 
-  <section id="login" class="card login hidden">
-    <span data-pig="Login"></span>
-    <p>Googleアカウントでログインしてね</p>
+  <section id="login" class="login hidden">
+    <svg class="mascot" viewBox="0 0 160 120" aria-hidden="true">
+      <ellipse cx="80" cy="112" rx="52" ry="5" fill="#000" opacity=".06"/>
+      <g class="bob">
+        <rect class="dark" x="42" y="82" width="18" height="24" rx="9"/>
+        <rect class="dark" x="100" y="82" width="18" height="24" rx="9"/>
+        <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
+        <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
+        <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
+        <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
+        <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
+        <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
+        <ellipse cx="128" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
+        <ellipse cx="137" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
+        <circle class="eye" cx="112" cy="54" r="5"/>
+        <circle cx="114" cy="52" r="1.6" fill="#fff"/>
+        <circle cx="106" cy="70" r="7" fill="#ff6f8f" opacity=".3"/>
+      </g>
+    </svg>
+    <h2>毎日100円、<br>コツコツ貯めよう。</h2>
+    <p>Googleアカウントでログインしてください。</p>
     <div id="gbtn"></div>
     <div id="loginError" class="error"></div>
   </section>
 
-  <section id="loading" class="card loadcard hidden">
-    <span data-pig="Load"></span>
-    <p class="loadtext">読み込み中<span class="dots"><i>.</i><i>.</i><i>.</i></span></p>
+  <section id="loading" class="loading hidden">
+    <p>読み込み中</p>
     <div class="loadbar"><i></i></div>
   </section>
 
-  <section id="user" class="hidden">
-    <div class="card">
-      <div class="stage">
-        <div class="dropcoin" id="dropcoin">100</div>
-        <span data-pig="" ></span>
-      </div>
-      <p class="label">いままでに貯めた金額</p>
+  <div id="user" class="hidden">
+    <section class="hero">
+      <svg class="mascot" viewBox="0 0 160 120" aria-hidden="true">
+      <ellipse cx="80" cy="112" rx="52" ry="5" fill="#000" opacity=".06"/>
+      <g class="bob">
+        <rect class="dark" x="42" y="82" width="18" height="24" rx="9"/>
+        <rect class="dark" x="100" y="82" width="18" height="24" rx="9"/>
+        <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
+        <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
+        <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
+        <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
+        <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
+        <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
+        <ellipse cx="128" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
+        <ellipse cx="137" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
+        <circle class="eye" cx="112" cy="54" r="5"/>
+        <circle cx="114" cy="52" r="1.6" fill="#fff"/>
+        <circle cx="106" cy="70" r="7" fill="#ff6f8f" opacity=".3"/>
+      </g>
+    </svg>
+      <p class="label">貯めた金額</p>
       <p class="big"><span id="total">0</span><small>円</small></p>
       <p class="cheer" id="cheer"></p>
-
       <div class="track">
         <div class="fill" id="bar"></div>
-        <span class="mark" style="left:25%">🌷</span>
-        <span class="mark" style="left:50%">🍓</span>
-        <span class="mark" style="left:75%">🎀</span>
-        <span class="mark" style="left:100%">👑</span>
+        <span class="tick" style="left:25%"><i>25%</i></span>
+        <span class="tick" style="left:50%"><i>50%</i></span>
+        <span class="tick" style="left:75%"><i>75%</i></span>
+        <span class="tick" style="left:100%"><i>100%</i></span>
       </div>
       <div class="ends">
         <span>目標 <b id="goal">30,000</b>円</span>
-        <span>あと <b id="remaining">30,000</b>円</span>
+        <span>残り <b id="remaining">30,000</b>円</span>
       </div>
-
-      <button id="saveBtn" class="coin" type="button">今日の100円を貯金した 💗</button>
+      <button id="saveBtn" class="coin" type="button">今日の100円を貯金する</button>
       <p id="note" class="note"></p>
       <p id="error" class="error"></p>
-    </div>
+    </section>
 
-    <div class="card addcard">
+    <section>
+      <h2>記録 <span id="stampCount">0 / 300</span></h2>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section>
       <h2>別の日の貯金をリクエスト</h2>
-      <p class="hint">今日以外の日に貯金したときは、日時を選んで送ってね。管理者が確認します。</p>
+      <p class="hint">今日以外の日に貯金したときは、日時を選んで送信してください。管理者が確認します。</p>
       <div class="addrow">
         <input type="datetime-local" id="reqAt" aria-label="リクエストする日時">
         <button id="reqBtn" class="addbtn" type="button">送信</button>
       </div>
       <p id="reqMsg" class="error"></p>
       <ul id="reqList" class="list spaced"></ul>
-    </div>
+    </section>
+  </div>
 
-    <div class="card stamp">
-      <h2>貯金スタンプカード <span id="stampCount">0 / 300</span></h2>
-      <div class="grid" id="grid"></div>
-    </div>
-  </section>
-
-  <section id="admin" class="hidden">
-    <p class="admin-tag">管理者ページ 🔑</p>
+  <div id="admin" class="hidden">
     <div class="stats">
-      <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span>円</strong></div>
-      <div class="stat"><p>目標まであと</p><strong><span id="aRemaining">0</span>円</strong></div>
+      <div class="stat"><p>貯まった金額</p><strong><span id="aTotal">0</span><small>円</small></strong></div>
+      <div class="stat"><p>目標まで</p><strong><span id="aRemaining">0</span><small>円</small></strong></div>
     </div>
-    <div class="card addcard">
-      <h2>承認待ちのリクエスト <span id="pendCount" style="font-size:13px;color:var(--muted);font-weight:500"></span></h2>
+
+    <section>
+      <h2>承認待ち <span id="pendCount"></span></h2>
       <ul id="pending" class="list"></ul>
       <p id="pendMsg" class="error"></p>
-    </div>
+    </section>
 
-    <div class="card addcard">
+    <section>
       <h2>日時を指定して追加</h2>
       <div class="addrow">
         <input type="datetime-local" id="addAt" aria-label="追加する日時">
         <button id="addBtn" class="addbtn" type="button">追加</button>
       </div>
       <p id="addMsg" class="error"></p>
-    </div>
+    </section>
 
-    <div class="card recs">
-      <h2>貯金の記録 <span id="aCount" style="font-size:13px;color:var(--muted);font-weight:500"></span></h2>
+    <section>
+      <h2>貯金の記録 <span id="aCount"></span></h2>
       <ul id="records" class="list"></ul>
       <p id="adminError" class="error"></p>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <button id="logout" class="logout hidden" type="button">🚪 ログアウト</button>
+  <button id="logout" class="logout hidden" type="button">ログアウト</button>
 </main>
 
 <script>
@@ -502,7 +333,12 @@ const CLIENT_ID = "51271346959-al6a6sprfiji96230nk3ehtm6f02bnhn.apps.googleuserc
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => Number(n).toLocaleString("ja-JP");
-let token = sessionStorage.getItem("idToken") || "";
+const TOKEN_KEY = "idToken";
+const readToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } };
+const writeToken = (v) => { try { if (v) localStorage.setItem(TOKEN_KEY, v); else localStorage.removeItem(TOKEN_KEY); } catch (e) {} };
+let token = readToken();
+let freshToken = false;
+let refreshing = false;
 let shownTotal = 0;
 let shownCount = 0;
 
@@ -510,68 +346,6 @@ const fmt = new Intl.DateTimeFormat("ja-JP", {
   timeZone: "Asia/Tokyo",
   year: "numeric", month: "numeric", day: "numeric",
   hour: "2-digit", minute: "2-digit", hour12: false
-});
-
-const PIG_LINES = [
-  "ブヒ♪",
-  "コツコツ！",
-  "えらい！",
-  "ぶひぶひ💗",
-  "ありがとう✨",
-  "今日もえらいね🌸",
-  "ちりも積もれば♪",
-  "おなかいっぱい🪙",
-  "ふとっぱら〜！",
-  "また明日ね💕"
-];
-let lastLine = -1;
-
-function nextLine() {
-  let i = Math.floor(Math.random() * PIG_LINES.length);
-  if (i === lastLine) i = (i + 1 + Math.floor(Math.random() * (PIG_LINES.length - 1))) % PIG_LINES.length;
-  lastLine = i;
-  return PIG_LINES[i];
-}
-
-function pigMarkup(name) {
-  const g = "pg" + name;
-  return '<svg class="pig" id="pig' + name + '" viewBox="0 0 230 170" aria-hidden="true">' +
-    '<defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d1"/><stop offset="1" stop-color="#ff7eb0"/></linearGradient></defs>' +
-    '<ellipse cx="115" cy="160" rx="82" ry="7" fill="#000" opacity=".08"/>' +
-    '<g class="sway"><g class="bob">' +
-    '<path class="tail" d="M30 96 q-26 -4 -18 -26 q4 14 20 12" fill="none" stroke="#ff7eb0" stroke-width="7" stroke-linecap="round"/>' +
-    '<rect class="leg1" x="58" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>' +
-    '<rect class="leg2" x="130" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>' +
-    '<path class="ear1" d="M68 50 L76 18 L102 42 Z" fill="#ff8fb8"/>' +
-    '<path class="ear2" d="M126 42 L152 20 L160 54 Z" fill="#ff8fb8"/>' +
-    '<ellipse cx="108" cy="92" rx="84" ry="62" fill="url(#' + g + ')"/>' +
-    '<rect x="86" y="34" width="44" height="9" rx="4.5" fill="#c2255c"/>' +
-    '<g class="sniff"><ellipse cx="190" cy="98" rx="22" ry="17" fill="#ff9cc2"/>' +
-    '<ellipse cx="183" cy="98" rx="3.5" ry="5" fill="#c2255c"/>' +
-    '<ellipse cx="197" cy="98" rx="3.5" ry="5" fill="#c2255c"/></g>' +
-    '<g class="eye"><circle cx="158" cy="76" r="6.5" fill="#4a2433"/><circle cx="160" cy="74" r="2.2" fill="#fff"/></g>' +
-    '<circle cx="154" cy="102" r="10" fill="#ff4f8b" opacity=".3"/>' +
-    '<path d="M88 80 q8 -8 16 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".5"/>' +
-    '</g></g></svg>';
-}
-
-document.querySelectorAll("[data-pig]").forEach((el) => {
-  el.outerHTML = pigMarkup(el.dataset.pig);
-});
-
-document.addEventListener("click", (e) => {
-  const pig = e.target.closest(".pig");
-  if (!pig) return;
-  pig.classList.remove("hop");
-  void pig.getBoundingClientRect();
-  pig.classList.add("hop");
-  const old = pig.parentElement.querySelector(".oink");
-  if (old) old.remove();
-  const b = document.createElement("div");
-  b.className = "oink";
-  b.textContent = nextLine();
-  pig.parentElement.appendChild(b);
-  setTimeout(() => b.remove(), 1450);
 });
 
 const grid = $("grid");
@@ -584,6 +358,7 @@ for (let i = 0; i < 300; i++) {
 function show(name) {
   ["login", "loading", "user", "admin"].forEach((s) => $(s).classList.toggle("hidden", s !== name));
   $("logout").classList.toggle("hidden", name === "login" || name === "loading");
+  $("tag").textContent = name === "admin" ? "管理者" : "";
 }
 
 async function api(path, options = {}) {
@@ -596,14 +371,36 @@ async function api(path, options = {}) {
   return { status: res.status, body };
 }
 
-function showLogin(message) {
+function showLogin(message, keepAuto) {
   token = "";
-  sessionStorage.removeItem("idToken");
+  refreshing = false;
+  writeToken("");
   show("login");
   $("loginError").textContent = message || "";
-  if (window.google && google.accounts && google.accounts.id) {
+  if (!keepAuto && window.google && google.accounts && google.accounts.id) {
     google.accounts.id.disableAutoSelect();
   }
+}
+
+function reauth() {
+  const message = "ログインの有効期限が切れました。もう一度ログインしてください。";
+  if (freshToken || !window.google || !google.accounts || !google.accounts.id) {
+    freshToken = false;
+    showLogin(message, true);
+    return;
+  }
+  token = "";
+  writeToken("");
+  refreshing = true;
+  show("loading");
+  const giveUp = () => { if (refreshing) showLogin(message, true); };
+  setTimeout(giveUp, 8000);
+  google.accounts.id.prompt((n) => {
+    if (!refreshing) return;
+    const reason = n.getDismissedReason && n.getDismissedReason();
+    if (reason === "credential_returned") return;
+    if ((n.isNotDisplayed && n.isNotDisplayed()) || (n.isSkippedMoment && n.isSkippedMoment()) || (n.isDismissedMoment && n.isDismissedMoment())) giveUp();
+  });
 }
 
 function countUp(el, from, to) {
@@ -621,32 +418,23 @@ function countUp(el, from, to) {
 }
 
 function cheerText(p) {
-  if (p >= 100) return "目標達成！ほんとにすごい 🎉";
-  if (p >= 75) return "ゴールまであと少し！ 👑";
-  if (p >= 50) return "折り返し地点を越えたよ 🍓";
-  if (p >= 25) return "コツコツ続けてえらい！ 🌷";
-  if (p > 0) return "いい調子！その調子 ✨";
-  return "はじめの一歩、ここから 💗";
+  if (p >= 100) return "目標達成、おめでとう！";
+  if (p >= 75) return "ゴールまであと少し！";
+  if (p >= 50) return "折り返し地点を越えたよ";
+  if (p >= 25) return "コツコツ続けてえらい！";
+  if (p > 0) return "いい調子、その調子！";
+  return "はじめの一歩、ここから";
 }
 
-function burst(origin) {
-  const r = origin.getBoundingClientRect();
-  const icons = ["💗", "🌸", "✨", "🪙", "💕", "🎀"];
-  for (let i = 0; i < 26; i++) {
-    const s = document.createElement("span");
-    s.className = "burst";
-    s.textContent = icons[i % icons.length];
-    s.style.left = r.left + r.width / 2 + "px";
-    s.style.top = r.top + r.height / 2 + "px";
-    const a = Math.random() * Math.PI * 2;
-    const d = 90 + Math.random() * 150;
-    s.style.setProperty("--dx", Math.cos(a) * d + "px");
-    s.style.setProperty("--dy", Math.sin(a) * d - 60 + "px");
-    s.style.setProperty("--r", (Math.random() * 360 - 180) + "deg");
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1400);
-  }
+function jstNowInput() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 16);
 }
+
+function yesterdayInput() {
+  return new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
+}
+
+const STATUS_TEXT = { pending: "承認待ち", approved: "承認済み", rejected: "却下" };
 
 function renderUser(d) {
   show("user");
@@ -658,7 +446,7 @@ function renderUser(d) {
   $("remaining").textContent = yen(d.remaining);
   const pct = Math.min(100, (d.total / d.goal) * 100);
   requestAnimationFrame(() => { $("bar").style.width = pct + "%"; });
-  document.querySelectorAll(".mark").forEach((m) => {
+  document.querySelectorAll(".tick").forEach((m) => {
     m.classList.toggle("on", pct >= parseFloat(m.style.left));
   });
   $("cheer").textContent = cheerText(pct);
@@ -676,132 +464,24 @@ function renderUser(d) {
   const btn = $("saveBtn");
   if (d.remaining === 0) {
     btn.disabled = true;
-    btn.textContent = "30,000円 達成しました 🎉";
-    $("note").textContent = "おめでとうございます 🎊";
+    btn.textContent = "30,000円 達成";
+    $("note").textContent = "おめでとうございます！";
   } else if (d.savedToday) {
     btn.disabled = true;
-    btn.textContent = "今日の貯金は完了です ✨";
-    $("note").textContent = "また明日、押してね";
+    btn.textContent = "今日の貯金は完了しました";
+    $("note").textContent = "また明日、押してください。";
   } else {
     btn.disabled = false;
-    btn.textContent = "今日の100円を貯金した 💗";
+    btn.textContent = "今日の100円を貯金する";
     $("note").textContent = "";
   }
 }
-
-function renderAdmin(d) {
-  show("admin");
-  renderPending(d.pending || []);
-  $("addAt").max = jstNowInput();
-  $("aTotal").textContent = yen(d.total);
-  $("aRemaining").textContent = yen(d.remaining);
-  $("aCount").textContent = d.records.length + "件";
-
-  const ul = $("records");
-  ul.textContent = "";
-  if (!d.records.length) {
-    const li = document.createElement("li");
-    li.className = "empty";
-    li.textContent = "まだ記録がありません 🌱";
-    ul.appendChild(li);
-    return;
-  }
-  d.records.forEach((r) => {
-    const li = document.createElement("li");
-    const face = document.createElement("div");
-    face.className = "face";
-    face.textContent = "🪙";
-
-    const box = document.createElement("div");
-    box.className = "txt";
-    const when = document.createElement("div");
-    when.className = "when";
-    when.textContent = fmt.format(new Date(r.saved_at)) + " に100円";
-    const who = document.createElement("div");
-    who.className = "who";
-    who.textContent = r.saved_by;
-    box.append(when, who);
-
-    const del = document.createElement("button");
-    del.className = "del";
-    del.type = "button";
-    del.textContent = "削除";
-    del.addEventListener("click", () => removeRecord(r, del));
-
-    li.append(face, box, del);
-    ul.appendChild(li);
-  });
-}
-
-async function load(screen) {
-  let wait = Promise.resolve();
-  if (screen) {
-    show("loading");
-    wait = new Promise((r) => setTimeout(r, 700));
-  }
-  const { status, body } = await api("/api/status");
-  await wait;
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
-  if (status === 403) return showLogin("このアカウントは許可されていません。");
-  if (status !== 200) return showLogin("読み込みに失敗しました。時間をおいて再度お試しください。");
-  if (body.role === "admin") renderAdmin(body); else renderUser(body);
-}
-
-async function removeRecord(r, button) {
-  if (!confirm(fmt.format(new Date(r.saved_at)) + " の記録を削除しますか？")) return;
-  button.disabled = true;
-  $("adminError").textContent = "";
-  const { status } = await api("/api/records/" + r.id, { method: "DELETE" });
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
-  if (status !== 200) {
-    button.disabled = false;
-    $("adminError").textContent = "削除できませんでした。";
-    return;
-  }
-  load();
-}
-
-$("saveBtn").addEventListener("click", async () => {
-  const btn = $("saveBtn");
-  btn.disabled = true;
-  $("error").textContent = "";
-  const { status } = await api("/api/save", { method: "POST" });
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
-  if (status === 409) { load(); return; }
-  if (status !== 200) {
-    btn.disabled = false;
-    $("error").textContent = "記録できませんでした。もう一度押してください。";
-    return;
-  }
-  const coin = $("dropcoin");
-  const pig = $("pig");
-  coin.classList.remove("go");
-  void coin.offsetWidth;
-  coin.classList.add("go");
-  setTimeout(() => {
-    pig.classList.remove("wiggle");
-    void pig.offsetWidth;
-    pig.classList.add("wiggle");
-    burst(pig);
-    load();
-  }, 800);
-});
-
-function yesterdayInput() {
-  return new Date(Date.now() + 9 * 60 * 60 * 1000 - 24 * 60 * 60 * 1000).toISOString().slice(0, 16);
-}
-
-const STATUS_TEXT = { pending: "承認待ち", approved: "承認されました", rejected: "却下されました" };
-const STATUS_FACE = { pending: "📮", approved: "✅", rejected: "🙅" };
 
 function renderRequests(list) {
   const ul = $("reqList");
   ul.textContent = "";
   list.forEach((r) => {
     const li = document.createElement("li");
-    const face = document.createElement("div");
-    face.className = "face";
-    face.textContent = STATUS_FACE[r.status] || "📮";
     const box = document.createElement("div");
     box.className = "txt";
     const when = document.createElement("div");
@@ -811,7 +491,7 @@ function renderRequests(list) {
     const badge = document.createElement("span");
     badge.className = "badge " + r.status;
     badge.textContent = STATUS_TEXT[r.status] || r.status;
-    li.append(face, box, badge);
+    li.append(box, badge);
     ul.appendChild(li);
   });
 }
@@ -823,15 +503,12 @@ function renderPending(list) {
   if (!list.length) {
     const li = document.createElement("li");
     li.className = "empty";
-    li.textContent = "リクエストはありません 🌿";
+    li.textContent = "リクエストはありません";
     ul.appendChild(li);
     return;
   }
   list.forEach((r) => {
     const li = document.createElement("li");
-    const face = document.createElement("div");
-    face.className = "face";
-    face.textContent = "📮";
     const box = document.createElement("div");
     box.className = "txt";
     const when = document.createElement("div");
@@ -856,10 +533,94 @@ function renderPending(list) {
     btns.className = "btns";
     btns.append(yes, no);
 
-    li.append(face, box, btns);
+    li.append(box, btns);
     ul.appendChild(li);
   });
 }
+
+function renderAdmin(d) {
+  show("admin");
+  renderPending(d.pending || []);
+  $("addAt").max = jstNowInput();
+  $("aTotal").textContent = yen(d.total);
+  $("aRemaining").textContent = yen(d.remaining);
+  $("aCount").textContent = d.records.length + "件";
+
+  const ul = $("records");
+  ul.textContent = "";
+  if (!d.records.length) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "まだ記録がありません";
+    ul.appendChild(li);
+    return;
+  }
+  d.records.forEach((r) => {
+    const li = document.createElement("li");
+    const box = document.createElement("div");
+    box.className = "txt";
+    const when = document.createElement("div");
+    when.className = "when";
+    when.textContent = fmt.format(new Date(r.saved_at)) + " に100円";
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = r.saved_by;
+    box.append(when, who);
+
+    const del = document.createElement("button");
+    del.className = "del";
+    del.type = "button";
+    del.textContent = "削除";
+    del.addEventListener("click", () => removeRecord(r, del));
+
+    li.append(box, del);
+    ul.appendChild(li);
+  });
+}
+
+async function load(screen) {
+  let wait = Promise.resolve();
+  if (screen) {
+    show("loading");
+    wait = new Promise((r) => setTimeout(r, 500));
+  }
+  const { status, body } = await api("/api/status");
+  await wait;
+  if (status === 401) return reauth();
+  if (status === 403) return showLogin("このアカウントは許可されていません。");
+  if (status !== 200) return showLogin("読み込みに失敗しました。時間をおいて再度お試しください。");
+  freshToken = false;
+  if (body.role === "admin") renderAdmin(body); else renderUser(body);
+}
+
+async function removeRecord(r, button) {
+  if (!confirm(fmt.format(new Date(r.saved_at)) + " の記録を削除しますか？")) return;
+  button.disabled = true;
+  $("adminError").textContent = "";
+  const { status } = await api("/api/records/" + r.id, { method: "DELETE" });
+  if (status === 401) return reauth();
+  if (status !== 200) {
+    button.disabled = false;
+    $("adminError").textContent = "削除できませんでした。";
+    return;
+  }
+  load();
+}
+
+$("saveBtn").addEventListener("click", async () => {
+  const btn = $("saveBtn");
+  btn.disabled = true;
+  $("error").textContent = "";
+  const { status } = await api("/api/save", { method: "POST" });
+  if (status === 401) return reauth();
+  if (status === 409) { load(); return; }
+  if (status !== 200) {
+    btn.disabled = false;
+    $("error").textContent = "記録できませんでした。もう一度押してください。";
+    return;
+  }
+  load();
+});
 
 async function decide(r, action, buttons) {
   const label = action === "approve" ? "承認" : "却下";
@@ -868,7 +629,7 @@ async function decide(r, action, buttons) {
   msg.textContent = "";
   buttons.forEach((b) => { b.disabled = true; });
   const { status, body } = await api("/api/requests/" + r.id + "/" + action, { method: "POST" });
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 401) return reauth();
   if (status === 409) {
     buttons.forEach((b) => { b.disabled = false; });
     msg.textContent = "その日はすでに記録があります。却下してください。";
@@ -904,10 +665,10 @@ $("reqBtn").addEventListener("click", async () => {
     body: JSON.stringify({ savedAt: value })
   });
   btn.disabled = false;
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 401) return reauth();
   const errors = {
     future: "未来の日時は選べません。",
-    today: "今日の分は「今日の100円を貯金した」ボタンを押してね。",
+    today: "今日の分は「今日の100円を貯金する」ボタンを押してください。",
     already_saved: "その日はすでに記録があります。",
     already_requested: "その日はすでにリクエスト中です。",
     goal_reached: "目標に達しているのでリクエストできません。",
@@ -918,13 +679,9 @@ $("reqBtn").addEventListener("click", async () => {
     return;
   }
   msg.className = "ok";
-  msg.textContent = "リクエストを送りました 💌";
+  msg.textContent = "リクエストを送信しました。";
   load();
 });
-
-function jstNowInput() {
-  return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 16);
-}
 
 $("addAt").value = jstNowInput();
 
@@ -945,13 +702,13 @@ $("addBtn").addEventListener("click", async () => {
     body: JSON.stringify({ savedAt: value })
   });
   btn.disabled = false;
-  if (status === 401) return showLogin("ログインの有効期限が切れました。もう一度ログインしてください。");
+  if (status === 401) return reauth();
   if (status === 409) { msg.textContent = "その日はすでに記録があります。"; return; }
   if (status === 400 && body.error === "future") { msg.textContent = "未来の日時は追加できません。"; return; }
   if (status === 400 && body.error === "goal_reached") { msg.textContent = "目標に達しているので追加できません。"; return; }
   if (status !== 200) { msg.textContent = "追加できませんでした。"; return; }
   msg.className = "ok";
-  msg.textContent = "追加しました 💗";
+  msg.textContent = "追加しました。";
   $("addAt").value = jstNowInput();
   load();
 });
@@ -960,7 +717,9 @@ $("logout").addEventListener("click", () => { shownTotal = 0; shownCount = 0; sh
 
 function onCredential(response) {
   token = response.credential;
-  sessionStorage.setItem("idToken", token);
+  freshToken = true;
+  refreshing = false;
+  writeToken(token);
   load(true);
 }
 
@@ -969,9 +728,13 @@ function initGoogle() {
     setTimeout(initGoogle, 100);
     return;
   }
-  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCredential, auto_select: false });
+  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onCredential, auto_select: true, cancel_on_tap_outside: false });
   google.accounts.id.renderButton($("gbtn"), { theme: "outline", size: "large", text: "signin_with", locale: "ja", width: 280 });
-  if (token) load(true); else show("login");
+  if (token) load(true);
+  else {
+    show("login");
+    google.accounts.id.prompt();
+  }
 }
 
 initGoogle();
