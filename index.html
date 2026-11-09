@@ -61,16 +61,13 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .hint { margin: -6px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 
 .mascot { display: block; width: 250px; max-width: 100%; height: auto; margin: 14px auto 6px; overflow: visible; }
-.mascot .body { fill: var(--pig); }
-.mascot .dark { fill: var(--pig-dark); }
-.mascot .eye { fill: #4b3238; }
 .mascot .gold { fill: #ffd76a; stroke: #e9b23a; stroke-width: 2; }
 .mascot .bob { animation: bob 3s ease-in-out infinite; transform-origin: 80px 90px; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
 .hero, .login { position: relative; }
 .mascot { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.mascot .dropcoin { opacity: 0; transform-box: view-box; transform-origin: 80px 10px; }
+.mascot .dropcoin { opacity: 0; transform-box: view-box; transform-origin: 108px 12px; }
 .mascot.dropping .dropcoin { animation: coindrop .85s cubic-bezier(.55, 0, 1, .65) forwards; }
 @keyframes coindrop {
   0% { opacity: 1; transform: translateY(-26px) rotate(0); }
@@ -99,8 +96,8 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 }
 .oink {
   position: absolute;
-  left: 60%;
-  top: 20px;
+  left: 58%;
+  top: 14px;
   z-index: 5;
   padding: 7px 14px;
   border-radius: 18px 18px 18px 4px;
@@ -271,7 +268,7 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .logout:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .fill { transition: none; }
-  .cell.new, .loadbar i, .mascot .bob, .mascot.hop, .mascot.wiggle, .mascot.dropping .dropcoin, .mascot.dropping .spark, .oink { animation: none; }
+  .cell.new, .loadbar i, .mascot .sway, .mascot .bob, .mascot .tail, .mascot .ear1, .mascot .ear2, .mascot .eye, .mascot .sniff, .mascot .leg1, .mascot .leg2, .mascot.hop, .mascot.wiggle, .mascot.dropping .dropcoin, .mascot.dropping .spark, .oink { animation: none; }
 }
 </style>
 </head>
@@ -280,32 +277,33 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
   <header><h1>コツコツ貯金</h1><span id="tag"></span></header>
 
   <section id="login" class="login hidden">
-    <svg class="mascot" viewBox="0 0 160 120" aria-hidden="true">
-      <ellipse cx="80" cy="112" rx="52" ry="5" fill="#000" opacity=".06"/>
-      <g class="bob">
-        <rect class="dark" x="42" y="82" width="18" height="24" rx="9"/>
-        <rect class="dark" x="100" y="82" width="18" height="24" rx="9"/>
-        <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
-        <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
-        <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
-        <g class="dropcoin"><circle class="gold" cx="80" cy="10" r="10"/><text x="80" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="#a86b00">100</text></g>
+    <svg class="mascot" viewBox="0 0 230 170" aria-hidden="true">
+      <defs><linearGradient id="pgLogin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d1"/><stop offset="1" stop-color="#ff7eb0"/></linearGradient></defs>
+      <ellipse cx="115" cy="160" rx="82" ry="7" fill="#000" opacity=".08"/>
+      <g class="sway"><g class="bob">
+        <path class="tail" d="M30 96 q-26 -4 -18 -26 q4 14 20 12" fill="none" stroke="#ff7eb0" stroke-width="7" stroke-linecap="round"/>
+        <rect class="leg1" x="58" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+        <rect class="leg2" x="130" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+        <path class="ear1" d="M68 50 L76 18 L102 42 Z" fill="#ff8fb8"/>
+        <path class="ear2" d="M126 42 L152 20 L160 54 Z" fill="#ff8fb8"/>
+        <g class="dropcoin"><circle class="gold" cx="108" cy="12" r="12"/><text x="108" y="16" text-anchor="middle" font-size="11" font-weight="900" fill="#a86b00">100</text></g>
         <g class="sparks">
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-34px;--dy:-26px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-14px;--dy:-38px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:14px;--dy:-38px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:34px;--dy:-26px"/>
-          <circle class="spark" cx="80" cy="30" r="2" style="--dx:-50px;--dy:-10px"/>
-          <circle class="spark" cx="80" cy="30" r="2" style="--dx:50px;--dy:-10px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:-44px;--dy:-30px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:-18px;--dy:-46px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:18px;--dy:-46px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:44px;--dy:-30px"/>
+          <circle class="spark" cx="108" cy="36" r="2.5" style="--dx:-64px;--dy:-12px"/>
+          <circle class="spark" cx="108" cy="36" r="2.5" style="--dx:64px;--dy:-12px"/>
         </g>
-        <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
-        <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
-        <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
-        <ellipse cx="128" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
-        <ellipse cx="137" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
-        <circle class="eye" cx="112" cy="54" r="5"/>
-        <circle cx="114" cy="52" r="1.6" fill="#fff"/>
-        <circle cx="106" cy="70" r="7" fill="#ff6f8f" opacity=".3"/>
-      </g>
+        <ellipse cx="108" cy="92" rx="84" ry="62" fill="url(#pgLogin)"/>
+        <rect x="86" y="34" width="44" height="9" rx="4.5" fill="#c2255c"/>
+        <g class="sniff"><ellipse cx="190" cy="98" rx="22" ry="17" fill="#ff9cc2"/>
+        <ellipse cx="183" cy="98" rx="3.5" ry="5" fill="#c2255c"/>
+        <ellipse cx="197" cy="98" rx="3.5" ry="5" fill="#c2255c"/></g>
+        <g class="eye"><circle cx="158" cy="76" r="6.5" fill="#4a2433"/><circle cx="160" cy="74" r="2.2" fill="#fff"/></g>
+        <circle cx="154" cy="102" r="10" fill="#ff4f8b" opacity=".3"/>
+        <path d="M88 80 q8 -8 16 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+      </g></g>
     </svg>
     <h2>毎日100円、<br>コツコツ貯めよう。</h2>
     <p>Googleアカウントでログインしてください。</p>
@@ -320,32 +318,33 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 
   <div id="user" class="hidden">
     <section class="hero">
-      <svg class="mascot" viewBox="0 0 160 120" aria-hidden="true">
-      <ellipse cx="80" cy="112" rx="52" ry="5" fill="#000" opacity=".06"/>
-      <g class="bob">
-        <rect class="dark" x="42" y="82" width="18" height="24" rx="9"/>
-        <rect class="dark" x="100" y="82" width="18" height="24" rx="9"/>
-        <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
-        <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
-        <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
-        <g class="dropcoin"><circle class="gold" cx="80" cy="10" r="10"/><text x="80" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="#a86b00">100</text></g>
+      <svg class="mascot" viewBox="0 0 230 170" aria-hidden="true">
+      <defs><linearGradient id="pgHero" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3d1"/><stop offset="1" stop-color="#ff7eb0"/></linearGradient></defs>
+      <ellipse cx="115" cy="160" rx="82" ry="7" fill="#000" opacity=".08"/>
+      <g class="sway"><g class="bob">
+        <path class="tail" d="M30 96 q-26 -4 -18 -26 q4 14 20 12" fill="none" stroke="#ff7eb0" stroke-width="7" stroke-linecap="round"/>
+        <rect class="leg1" x="58" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+        <rect class="leg2" x="130" y="126" width="26" height="30" rx="12" fill="#ff8fb8"/>
+        <path class="ear1" d="M68 50 L76 18 L102 42 Z" fill="#ff8fb8"/>
+        <path class="ear2" d="M126 42 L152 20 L160 54 Z" fill="#ff8fb8"/>
+        <g class="dropcoin"><circle class="gold" cx="108" cy="12" r="12"/><text x="108" y="16" text-anchor="middle" font-size="11" font-weight="900" fill="#a86b00">100</text></g>
         <g class="sparks">
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-34px;--dy:-26px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-14px;--dy:-38px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:14px;--dy:-38px"/>
-          <circle class="spark" cx="80" cy="30" r="3" style="--dx:34px;--dy:-26px"/>
-          <circle class="spark" cx="80" cy="30" r="2" style="--dx:-50px;--dy:-10px"/>
-          <circle class="spark" cx="80" cy="30" r="2" style="--dx:50px;--dy:-10px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:-44px;--dy:-30px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:-18px;--dy:-46px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:18px;--dy:-46px"/>
+          <circle class="spark" cx="108" cy="36" r="3.5" style="--dx:44px;--dy:-30px"/>
+          <circle class="spark" cx="108" cy="36" r="2.5" style="--dx:-64px;--dy:-12px"/>
+          <circle class="spark" cx="108" cy="36" r="2.5" style="--dx:64px;--dy:-12px"/>
         </g>
-        <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
-        <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
-        <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
-        <ellipse cx="128" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
-        <ellipse cx="137" cy="70" rx="2.5" ry="3.5" fill="var(--pig)"/>
-        <circle class="eye" cx="112" cy="54" r="5"/>
-        <circle cx="114" cy="52" r="1.6" fill="#fff"/>
-        <circle cx="106" cy="70" r="7" fill="#ff6f8f" opacity=".3"/>
-      </g>
+        <ellipse cx="108" cy="92" rx="84" ry="62" fill="url(#pgHero)"/>
+        <rect x="86" y="34" width="44" height="9" rx="4.5" fill="#c2255c"/>
+        <g class="sniff"><ellipse cx="190" cy="98" rx="22" ry="17" fill="#ff9cc2"/>
+        <ellipse cx="183" cy="98" rx="3.5" ry="5" fill="#c2255c"/>
+        <ellipse cx="197" cy="98" rx="3.5" ry="5" fill="#c2255c"/></g>
+        <g class="eye"><circle cx="158" cy="76" r="6.5" fill="#4a2433"/><circle cx="160" cy="74" r="2.2" fill="#fff"/></g>
+        <circle cx="154" cy="102" r="10" fill="#ff4f8b" opacity=".3"/>
+        <path d="M88 80 q8 -8 16 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+      </g></g>
     </svg>
       <p class="label">貯めた金額</p>
       <p class="big"><span id="total">0</span><small>円</small></p>
