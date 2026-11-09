@@ -60,16 +60,36 @@ h2 { margin: 0 0 14px; font-size: 15px; font-weight: 900; display: flex; justify
 h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: var(--soft); padding: 3px 10px; border-radius: 999px; }
 .hint { margin: -6px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 
-.mascot { display: block; width: 150px; height: auto; margin: 0 auto 6px; overflow: visible; }
+.mascot { display: block; width: 250px; max-width: 100%; height: auto; margin: 14px auto 6px; overflow: visible; }
 .mascot .body { fill: var(--pig); }
 .mascot .dark { fill: var(--pig-dark); }
 .mascot .eye { fill: #4b3238; }
-.mascot .coin { fill: #ffd76a; stroke: #e9b23a; stroke-width: 2; }
+.mascot .gold { fill: #ffd76a; stroke: #e9b23a; stroke-width: 2; }
 .mascot .bob { animation: bob 3s ease-in-out infinite; transform-origin: 80px 90px; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
 .hero, .login { position: relative; }
 .mascot { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mascot .dropcoin { opacity: 0; transform-box: view-box; transform-origin: 80px 10px; }
+.mascot.dropping .dropcoin { animation: coindrop .85s cubic-bezier(.55, 0, 1, .65) forwards; }
+@keyframes coindrop {
+  0% { opacity: 1; transform: translateY(-26px) rotate(0); }
+  80% { opacity: 1; transform: translateY(30px) rotate(540deg); }
+  100% { opacity: 0; transform: translateY(40px) rotate(600deg) scale(.7); }
+}
+.mascot .spark { opacity: 0; fill: #ffd76a; transform-box: view-box; }
+.mascot.dropping .spark { animation: spark .7s ease-out .8s forwards; }
+@keyframes spark {
+  0% { opacity: 1; transform: translate(0, 0) scale(.6); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.1); }
+}
+.mascot.wiggle { animation: wiggle .7s ease; }
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-5deg) scale(1.05); }
+  45% { transform: rotate(4deg) scale(1.03); }
+  70% { transform: rotate(-2deg) scale(1.01); }
+}
 .mascot.hop { animation: hop .65s cubic-bezier(.3, 1.4, .5, 1); }
 @keyframes hop {
   0% { transform: translateY(0) rotate(0); }
@@ -79,8 +99,8 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 }
 .oink {
   position: absolute;
-  left: 56%;
-  top: 14px;
+  left: 60%;
+  top: 20px;
   z-index: 5;
   padding: 7px 14px;
   border-radius: 18px 18px 18px 4px;
@@ -233,7 +253,7 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .logout:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .fill { transition: none; }
-  .cell.new, .loadbar i, .mascot .bob, .mascot.hop, .oink { animation: none; }
+  .cell.new, .loadbar i, .mascot .bob, .mascot.hop, .mascot.wiggle, .mascot.dropping .dropcoin, .mascot.dropping .spark, .oink { animation: none; }
 }
 </style>
 </head>
@@ -250,6 +270,15 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
         <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
         <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
         <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
+        <g class="dropcoin"><circle class="gold" cx="80" cy="10" r="10"/><text x="80" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="#a86b00">100</text></g>
+        <g class="sparks">
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-34px;--dy:-26px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-14px;--dy:-38px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:14px;--dy:-38px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:34px;--dy:-26px"/>
+          <circle class="spark" cx="80" cy="30" r="2" style="--dx:-50px;--dy:-10px"/>
+          <circle class="spark" cx="80" cy="30" r="2" style="--dx:50px;--dy:-10px"/>
+        </g>
         <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
         <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
         <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
@@ -281,6 +310,15 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
         <path class="dark" d="M30 66 q-14 -2 -10 -14 q2 8 12 6" fill="none" stroke="var(--pig-dark)" stroke-width="5" stroke-linecap="round"/>
         <path class="dark" d="M52 34 L58 12 L76 28 Z"/>
         <path class="dark" d="M100 28 L118 12 L124 36 Z"/>
+        <g class="dropcoin"><circle class="gold" cx="80" cy="10" r="10"/><text x="80" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="#a86b00">100</text></g>
+        <g class="sparks">
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-34px;--dy:-26px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:-14px;--dy:-38px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:14px;--dy:-38px"/>
+          <circle class="spark" cx="80" cy="30" r="3" style="--dx:34px;--dy:-26px"/>
+          <circle class="spark" cx="80" cy="30" r="2" style="--dx:-50px;--dy:-10px"/>
+          <circle class="spark" cx="80" cy="30" r="2" style="--dx:50px;--dy:-10px"/>
+        </g>
         <ellipse class="body" cx="80" cy="66" rx="54" ry="40"/>
         <rect x="64" y="30" width="32" height="6" rx="3" fill="var(--pig-dark)"/>
         <ellipse class="dark" cx="132" cy="70" rx="14" ry="11"/>
@@ -406,15 +444,19 @@ document.addEventListener("click", (e) => {
   pig.classList.remove("hop");
   void pig.getBoundingClientRect();
   pig.classList.add("hop");
+  say(pig, nextLine());
+});
+
+function say(pig, text) {
   const host = pig.parentElement;
   const old = host.querySelector(".oink");
   if (old) old.remove();
   const b = document.createElement("div");
   b.className = "oink";
-  b.textContent = nextLine();
+  b.textContent = text;
   host.appendChild(b);
   setTimeout(() => b.remove(), 1450);
-});
+}
 
 const grid = $("grid");
 for (let i = 0; i < 300; i++) {
@@ -687,7 +729,15 @@ $("saveBtn").addEventListener("click", async () => {
     $("error").textContent = "記録できませんでした。もう一度押してください。";
     return;
   }
-  load();
+  const pig = document.querySelector("#user .mascot");
+  pig.classList.remove("dropping", "wiggle");
+  void pig.getBoundingClientRect();
+  pig.classList.add("dropping");
+  setTimeout(() => {
+    pig.classList.add("wiggle");
+    say(pig, "チャリン♪");
+    load();
+  }, 850);
 });
 
 async function decide(r, action, buttons) {
