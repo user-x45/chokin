@@ -68,6 +68,37 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .mascot .bob { animation: bob 3s ease-in-out infinite; transform-origin: 80px 90px; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
+.hero, .login { position: relative; }
+.mascot { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mascot.hop { animation: hop .65s cubic-bezier(.3, 1.4, .5, 1); }
+@keyframes hop {
+  0% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-24px) rotate(-6deg); }
+  70% { transform: translateY(0) rotate(3deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+.oink {
+  position: absolute;
+  left: 56%;
+  top: 14px;
+  z-index: 5;
+  padding: 7px 14px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  color: var(--accent-deep);
+  font-weight: 900;
+  font-size: 14px;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: oink 1.4s ease-out forwards;
+}
+@keyframes oink {
+  0% { opacity: 0; transform: translateY(10px) scale(.6); }
+  20% { opacity: 1; transform: translateY(0) scale(1.05); }
+  80% { opacity: 1; transform: translateY(-10px) scale(1); }
+  100% { opacity: 0; transform: translateY(-18px) scale(1); }
+}
 .hero { text-align: center; }
 .label { margin: 0; color: var(--muted); font-size: 13px; }
 .big { margin: 2px 0 0; font-size: 62px; font-weight: 900; line-height: 1.1; letter-spacing: -.02em; color: var(--accent-deep); }
@@ -202,7 +233,7 @@ h2 span { font-size: 12px; font-weight: 500; color: var(--muted); background: va
 .logout:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .fill { transition: none; }
-  .cell.new, .loadbar i, .mascot .bob { animation: none; }
+  .cell.new, .loadbar i, .mascot .bob, .mascot.hop, .oink { animation: none; }
 }
 </style>
 </head>
@@ -346,6 +377,43 @@ const fmt = new Intl.DateTimeFormat("ja-JP", {
   timeZone: "Asia/Tokyo",
   year: "numeric", month: "numeric", day: "numeric",
   hour: "2-digit", minute: "2-digit", hour12: false
+});
+
+const PIG_LINES = [
+  "ブヒ♪",
+  "コツコツ！",
+  "えらい！",
+  "ぶひぶひ！",
+  "ありがとう",
+  "今日もえらいね",
+  "ちりも積もれば♪",
+  "おなかいっぱい",
+  "ふとっぱら〜！",
+  "また明日ね"
+];
+let lastLine = -1;
+
+function nextLine() {
+  let i = Math.floor(Math.random() * PIG_LINES.length);
+  if (i === lastLine) i = (i + 1 + Math.floor(Math.random() * (PIG_LINES.length - 1))) % PIG_LINES.length;
+  lastLine = i;
+  return PIG_LINES[i];
+}
+
+document.addEventListener("click", (e) => {
+  const pig = e.target.closest(".mascot");
+  if (!pig) return;
+  pig.classList.remove("hop");
+  void pig.getBoundingClientRect();
+  pig.classList.add("hop");
+  const host = pig.parentElement;
+  const old = host.querySelector(".oink");
+  if (old) old.remove();
+  const b = document.createElement("div");
+  b.className = "oink";
+  b.textContent = nextLine();
+  host.appendChild(b);
+  setTimeout(() => b.remove(), 1450);
 });
 
 const grid = $("grid");
