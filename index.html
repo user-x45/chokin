@@ -427,8 +427,6 @@ const TOKEN_KEY = "idToken";
 const readToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } };
 const writeToken = (v) => { try { if (v) localStorage.setItem(TOKEN_KEY, v); else localStorage.removeItem(TOKEN_KEY); } catch (e) {} };
 let token = readToken();
-let freshToken = false;
-let refreshing = false;
 let shownTotal = 0;
 let shownCount = 0;
 
@@ -504,7 +502,6 @@ async function api(path, options = {}) {
 
 function showLogin(message, keepAuto) {
   token = "";
-  refreshing = false;
   writeToken("");
   show("login");
   $("loginError").textContent = message || "";
@@ -514,24 +511,7 @@ function showLogin(message, keepAuto) {
 }
 
 function reauth() {
-  const message = "ログインの有効期限が切れました。もう一度ログインしてください。";
-  if (freshToken || !window.google || !google.accounts || !google.accounts.id) {
-    freshToken = false;
-    showLogin(message, true);
-    return;
-  }
-  token = "";
-  writeToken("");
-  refreshing = true;
-  show("loading");
-  const giveUp = () => { if (refreshing) showLogin(message, true); };
-  setTimeout(giveUp, 8000);
-  google.accounts.id.prompt((n) => {
-    if (!refreshing) return;
-    const reason = n.getDismissedReason && n.getDismissedReason();
-    if (reason === "credential_returned") return;
-    if ((n.isNotDisplayed && n.isNotDisplayed()) || (n.isSkippedMoment && n.isSkippedMoment()) || (n.isDismissedMoment && n.isDismissedMoment())) giveUp();
-  });
+  showLogin("ログインの有効期限が切れました。もう一度ログインしてください。", true);
 }
 
 function countUp(el, from, to) {
@@ -799,7 +779,6 @@ async function load(screen) {
   if (status === 401) return reauth();
   if (status === 403) return showLogin("このアカウントは許可されていません。");
   if (status !== 200) return showLogin("読み込みに失敗しました。時間をおいて再度お試しください。");
-  freshToken = false;
   if (body.role === "admin") renderAdmin(body); else renderUser(body);
 }
 
@@ -932,10 +911,22 @@ $("addBtn").addEventListener("click", async () => {
 
 $("logout").addEventListener("click", () => { shownTotal = 0; shownCount = 0; showLogin(""); });
 
-function onCredential(response) {
-  token = response.credential;
-  freshToken = true;
-  refreshing = false;
+async function onCredential(response) {
+  show("loading");
+  let res;
+  try {
+    res = await fetch(API_BASE + "/api/login", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + response.credential }
+    });
+  } catch (e) {
+    showLogin("通信に失敗しました。もう一度お試しください。", true);
+    return;
+  }
+  if (res.status === 403) { showLogin("このアカウントは許可されていません。"); return; }
+  if (!res.ok) { showLogin("ログインに失敗しました。もう一度お試しください。", true); return; }
+  const data = await res.json();
+  token = data.token;
   writeToken(token);
   load(true);
 }
